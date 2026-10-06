@@ -1,10 +1,10 @@
 # Lab 04 - Ingestion dengan Copy activity ke Bronze
 
-Bronze adalah salinan sumber yang **dapat diaudit**: setiap baris membawa hash, waktu ingest, run ID pipeline, dan path landing. Lab ini membangun bagian pertama pipeline `pl_piep_e2e`, yaitu ingestion berbasis metadata. Satu aktivitas Copy di dalam ForEach menyalin 25 entitas sesuai `ctl.entity_config`. Notebook kemudian merekonsiliasi jumlah baris sebelum commit ke Bronze.
+Bronze adalah salinan sumber yang **dapat diaudit**: setiap baris membawa hash, waktu ingest, run ID pipeline, dan path landing. Lab ini membangun bagian pertama pipeline `pl_zava_e2e`, yaitu ingestion berbasis metadata. Satu aktivitas Copy di dalam ForEach menyalin 25 entitas sesuai `ctl.entity_config`. Notebook kemudian merekonsiliasi jumlah baris sebelum commit ke Bronze.
 
 Dalam lab ini Anda akan:
 
-- [ ] Membuat Lakehouse `lh_piep_core` dengan schema dan mengimpor notebook workshop.
+- [ ] Membuat Lakehouse `lh_zava_core` dengan schema dan mengimpor notebook workshop.
 - [ ] Membuat koneksi Azure SQL dan pipeline Lookup → ForEach → Copy.
 - [ ] Menjalankan `nb_01_land_bronze` untuk rekonsiliasi landing dan append idempoten ke Bronze.
 - [ ] Membuktikan bahwa menjalankan ulang batch yang sama tidak menambah baris.
@@ -12,16 +12,16 @@ Dalam lab ini Anda akan:
 ## Prasyarat
 
 - [Lab 03](03-azure-sql-source.md) selesai: `B0` berstatus `SEALED`.
-- Workspace `ws-piep-ppdm-demo` dengan peran Admin/Member.
+- Workspace `ws-zava-ppdm-demo` dengan peran Admin/Member.
 
 ## Alur ingestion
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant P as pl_piep_e2e
+    participant P as pl_zava_e2e
     participant SQL as Azure SQL (ctl)
-    participant F as lh_piep_core Files/landing
+    participant F as lh_zava_core Files/landing
     participant N as nb_01_land_bronze
     participant B as Tabel bronze.* + ops.*
     P->>SQL: Lookup ctl.source_batch (state = SEALED)
@@ -42,8 +42,8 @@ sequenceDiagram
 
 ## 1. Buat Lakehouse inti
 
-1. Di workspace `ws-piep-ppdm-demo`, pilih **+ New item** > **Lakehouse**.
-2. Beri nama **`lh_piep_core`** dan centang **Lakehouse schemas**.
+1. Di workspace `ws-zava-ppdm-demo`, pilih **+ New item** > **Lakehouse**.
+2. Beri nama **`lh_zava_core`** dan centang **Lakehouse schemas**.
 3. Pilih **Create**.
 
 > [!NOTE]
@@ -55,36 +55,36 @@ sequenceDiagram
 2. Pilih file berikut dari `assets/fabric/notebooks/`: `nb_00_common.ipynb`, `nb_01_land_bronze.ipynb`, `nb_02_conform_master_ppdm.ipynb`, `nb_03_conform_production.ipynb`, `nb_04_conform_business.ipynb`, dan `nb_05_validate_and_serve.ipynb`.
 3. Untuk **setiap** notebook `nb_01` sampai `nb_05`:
    1. Buka notebook.
-   2. Di panel **Explorer**, pilih **Add data items** > **Existing data sources**, lalu pilih `lh_piep_core`.
-   3. Pastikan `lh_piep_core` ditandai sebagai Lakehouse **default** (ikon pin).
+   2. Di panel **Explorer**, pilih **Add data items** > **Existing data sources**, lalu pilih `lh_zava_core`.
+   3. Pastikan `lh_zava_core` ditandai sebagai Lakehouse **default** (ikon pin).
 
 > [!IMPORTANT]
 > Notebook memuat helper dengan `%run nb_00_common`. Karena itu, `nb_00_common` harus berada di workspace yang sama dan **tidak** dijalankan sendiri. Sel pertama setiap notebook adalah **parameter cell**, sehingga pipeline dapat mengisi `p_batch_id` dan `p_run_id`.
 
 ## 3. Buat pipeline bagian ingestion
 
-1. Pilih **+ New item** > **Data pipeline**, lalu beri nama **`pl_piep_e2e`**.
+1. Pilih **+ New item** > **Data pipeline**, lalu beri nama **`pl_zava_e2e`**.
 2. Di kanvas kosong, pilih tab **Parameters** dan tambahkan `p_batch_id` (String, default `B0`) dan `p_fail_after_bronze` (String, default `false`).
 3. Tambahkan aktivitas **1–5** dari [lembar aktivitas pipeline](../assets/fabric/pipelines/pipeline-activity-sheet.md):
 
    | Aktivitas | Hal yang perlu diperhatikan |
    |---|---|
-   | `lkp_sealed_batch` (Lookup) | Di **Connection**, pilih **More** > **Azure SQL database**. Buat koneksi `conn_sql_piep_source` ke server dan database Anda dengan **Organizational account**. Pilih **Query** dan tempel ekspresi E1. |
+   | `lkp_sealed_batch` (Lookup) | Di **Connection**, pilih **More** > **Azure SQL database**. Buat koneksi `conn_sql_zava_source` ke server dan database Anda dengan **Organizational account**. Pilih **Query** dan tempel ekspresi E1. |
    | `if_batch_sealed` (If Condition) | Expression E2. Di cabang **False**, tambahkan aktivitas **Fail** dengan pesan E3. Biarkan cabang **True** kosong. |
    | `lkp_entities` (Lookup) | Query E4; hapus centang **First row only**. |
-   | `fe_copy_entities` (ForEach) | Items E5; Batch count 8. Di dalam ForEach, tambahkan Copy `cp_entity_to_landing` dengan source query E6 dan destination Lakehouse `lh_piep_core` > **Files**, folder E7, file E8, format **Parquet**. |
+   | `fe_copy_entities` (ForEach) | Items E5; Batch count 8. Di dalam ForEach, tambahkan Copy `cp_entity_to_landing` dengan source query E6 dan destination Lakehouse `lh_zava_core` > **Files**, folder E7, file E8, format **Parquet**. |
    | `nb_01_land_bronze` (Notebook) | Pilih notebook, buka **Base parameters**, lalu isi `p_batch_id` = E9 dan `p_run_id` = E10. |
 
 4. Hubungkan aktivitas dengan panah **On success** sesuai kolom *Bergantung pada*.
 5. Pilih **Save**, lalu **Validate**.
 
 > [!NOTE]
-> **Opsi B (SQL privat):** pada aktivitas Lookup dan Copy, pilih koneksi `conn_sql_piep_source` yang dibuat pada VNet data gateway di Lab 03. Tidak ada perubahan lain pada pipeline.
+> **Opsi B (SQL privat):** pada aktivitas Lookup dan Copy, pilih koneksi `conn_sql_zava_source` yang dibuat pada VNet data gateway di Lab 03. Tidak ada perubahan lain pada pipeline.
 >
-> **Jalur cepat fasilitator:** setelah semua notebook dan Dataflow ada, `python -m workshop deploy-pipelines --config config/local.json --pipeline pl_piep_e2e` membuat pipeline lengkap dari [definisi yang sudah diuji](../assets/fabric/pipelines/definitions/pl_piep_e2e.json). Peserta tetap disarankan membangun aktivitas 1–5 secara manual agar memahami alurnya.
+> **Jalur cepat fasilitator:** setelah semua notebook dan Dataflow ada, `python -m workshop deploy-pipelines --config config/local.json --pipeline pl_zava_e2e` membuat pipeline lengkap dari [definisi yang sudah diuji](../assets/fabric/pipelines/definitions/pl_zava_e2e.json). Peserta tetap disarankan membangun aktivitas 1–5 secara manual agar memahami alurnya.
 
 > [!TIP]
-> Untuk mempercepat sesi notebook berikutnya, aktifkan **High concurrency mode for pipeline running multiple notebooks** di Workspace settings > Data Engineering/Science > Spark settings. Lalu isi **Session tag** yang sama, misalnya `piep`, pada setiap aktivitas Notebook.
+> Untuk mempercepat sesi notebook berikutnya, aktifkan **High concurrency mode for pipeline running multiple notebooks** di Workspace settings > Data Engineering/Science > Spark settings. Lalu isi **Session tag** yang sama, misalnya `zava`, pada setiap aktivitas Notebook.
 
 ## 4. Jalankan untuk B0
 
@@ -105,7 +105,7 @@ Pipeline aman di-*retry* karena baris Bronze diidentifikasi dengan `_row_hash` d
 
 ## Verifikasi
 
-Buka `lh_piep_core` > **SQL analytics endpoint**, lalu jalankan query berikut:
+Buka `lh_zava_core` > **SQL analytics endpoint**, lalu jalankan query berikut:
 
 ```sql
 SELECT BatchId, CommitOrder, PeriodStart, PeriodEnd FROM ops.ingestion_batch ORDER BY CommitOrder;

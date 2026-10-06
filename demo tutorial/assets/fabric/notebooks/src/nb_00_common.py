@@ -1,5 +1,5 @@
 # %% [markdown]
-# # nb_00_common - PIEP SSOT shared helpers
+# # nb_00_common - Zava Energy SSOT shared helpers
 #
 # Notebook lain menjalankan notebook ini melalui `%run nb_00_common`. Jangan jalankan notebook ini sendiri.
 #
@@ -18,7 +18,7 @@ spark.conf.set("spark.sql.session.timeZone", "UTC")
 
 TABLE_FORMAT = globals().get("p_table_format", "delta")
 RUN_ID = globals().get("p_run_id", "manual")
-DATASET_VERSION = "piep-ssot-1.0"
+DATASET_VERSION = "zava-ssot-1.0"
 MAPPING_VERSION = "PPDM-ALIGN-1.0"
 KPI_CONTRACT_VERSION = "KPI-1.0"
 VOLUME = "decimal(19,6)"

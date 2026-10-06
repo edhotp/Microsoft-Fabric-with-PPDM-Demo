@@ -5,7 +5,7 @@
 # memeriksa jumlah baris terhadap `ctl.batch_entity`, lalu menambahkan baris **baru** ke tabel
 # `bronze.<entity>` secara idempoten. Bronze menyimpan bukti sumber apa adanya.
 #
-# **Lakehouse default:** `lh_piep_core`.
+# **Lakehouse default:** `lh_zava_core`.
 
 # %% [parameters]
 p_batch_id = "B0"

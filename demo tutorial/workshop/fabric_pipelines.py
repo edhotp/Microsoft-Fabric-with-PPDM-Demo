@@ -1,4 +1,4 @@
-"""Fabric pipeline definitions for the PIEP SSOT workshop (tested against Fabric Data Factory).
+"""Fabric pipeline definitions for the Zava Energy SSOT workshop (tested against Fabric Data Factory).
 
 The tutorial builds the pipelines in the UI (Lab 04 and Lab 08). These builders produce the same
 activities as JSON so a facilitator can deploy them with `python -m workshop deploy-pipelines`, and so
@@ -50,11 +50,11 @@ class Builder:
                 "externalReferences": {"connection": self.ids["sql_connection"]}}
 
     def lakehouse(self) -> dict:
-        return {"name": "lh_piep_core", "properties": {"annotations": [], "type": "Lakehouse", "typeProperties": {
+        return {"name": "lh_zava_core", "properties": {"annotations": [], "type": "Lakehouse", "typeProperties": {
             "workspaceId": self.ids["core_workspace"], "artifactId": self.ids["lakehouse"], "rootFolder": "Files"}}}
 
     def warehouse(self) -> dict:
-        return {"name": "wh_piep_gold", "properties": {"annotations": [], "type": "DataWarehouse", "typeProperties": {
+        return {"name": "wh_zava_gold", "properties": {"annotations": [], "type": "DataWarehouse", "typeProperties": {
             "endpoint": self.ids["warehouse_endpoint"], "artifactId": self.ids["warehouse"],
             "workspaceId": self.ids["core_workspace"]}}}
 
@@ -138,7 +138,7 @@ def _batch_sql(template: str) -> dict:
 
 
 def load_source(b: Builder) -> dict:
-    """Load one generated batch from lh_piep_core Files/source_packs/<batch>/ into Azure SQL, sealing it last."""
+    """Load one generated batch from lh_zava_core Files/source_packs/<batch>/ into Azure SQL, sealing it last."""
     def copy_csv(name, file_name, schema, table, depends):
         return {"name": name, "type": "Copy", "dependsOn": depends, "policy": policy(retry=1), "typeProperties": {
             "source": {"type": "DelimitedTextSource",
@@ -189,7 +189,7 @@ E = {
     "E10": "@pipeline().RunId",
     "E11": f"@{P}.p_fail_after_bronze",
     "E12": f"@concat('PUB-', {P}.p_batch_id)",
-    "E13": f"@concat('Batch ', {P}.p_batch_id, ' failed the SSOT quality gate. Gold is unchanged. Check ops.quality_evidence and ops.dq_issue_summary in wh_piep_gold.')",
+    "E13": f"@concat('Batch ', {P}.p_batch_id, ' failed the SSOT quality gate. Gold is unchanged. Check ops.quality_evidence and ops.dq_issue_summary in wh_zava_gold.')",
     "P1": f"@{P}.p_publication_id",
 }
 
@@ -222,10 +222,10 @@ def e2e(b: Builder) -> dict:
         b.notebook("nb_02_conform_master_ppdm", "nb_02_conform_master_ppdm", {**base, "p_fail_after_bronze": E["E11"]},
                    dep("nb_01_land_bronze")),
         b.notebook("nb_03_conform_production", "nb_03_conform_production", base, dep("nb_02_conform_master_ppdm")),
-        b.dataflow("df_piep_target_etl", dep("nb_01_land_bronze")),
-        b.dataflow("df_piep_cost_etl", dep("nb_01_land_bronze")),
+        b.dataflow("df_zava_target_etl", dep("nb_01_land_bronze")),
+        b.dataflow("df_zava_cost_etl", dep("nb_01_land_bronze")),
         b.notebook("nb_04_conform_business", "nb_04_conform_business", base,
-                   dep("nb_03_conform_production", "df_piep_target_etl", "df_piep_cost_etl")),
+                   dep("nb_03_conform_production", "df_zava_target_etl", "df_zava_cost_etl")),
         b.notebook("nb_05_validate_and_serve", "nb_05_validate_and_serve", base, dep("nb_04_conform_business")),
         b.proc("sp_stage_candidate", "[ops].[usp_stage_candidate]", {"PublicationId": E["E12"], "RunId": E["E10"]},
                dep("nb_05_validate_and_serve"), retry=3, interval=120),
@@ -243,7 +243,7 @@ def publish_gold(b: Builder) -> dict:
     acts = [b.proc("sp_publish_publication", "[ops].[usp_publish_publication]",
                    {"PublicationId": E["P1"], "RunId": E["E10"]}, [])]
     if b.ids.get("semantic_model") and b.ids.get("semantic_model_connection"):
-        acts.append({"name": "sm_refresh_piep_performance", "type": "PBISemanticModelRefresh",
+        acts.append({"name": "sm_refresh_zava_performance", "type": "PBISemanticModelRefresh",
                      "dependsOn": dep("sp_publish_publication"), "policy": policy(),
                      "typeProperties": {"method": "post", "groupId": b.ids["core_workspace"],
                                         "datasetId": b.ids["semantic_model"], "commitMode": "Transactional",
@@ -251,11 +251,11 @@ def publish_gold(b: Builder) -> dict:
                      "externalReferences": {"connection": b.ids["semantic_model_connection"]}})
         acts.append(b.proc("sp_consumer_semantic_model", "[ops].[usp_record_consumer_status]",
                            {"PublicationId": E["P1"], "Consumer": "SEMANTIC_MODEL", "Status": "REFRESHED"},
-                           dep("sm_refresh_piep_performance")))
+                           dep("sm_refresh_zava_performance")))
     if b.ids.get("notebook:nb_06_prepare_ai_serving"):
         acts.append(b.notebook("nb_06_prepare_ai_serving", "nb_06_prepare_ai_serving",
                                {"p_publication_id": E["P1"], "p_run_id": E["E10"],
-                                "p_source_prefix": f"`{b.ids['core_workspace_name']}`.`lh_piep_core`.`serve`"},
+                                "p_source_prefix": f"`{b.ids['core_workspace_name']}`.`lh_zava_core`.`serve`"},
                                dep("sp_publish_publication"), workspace="ai_workspace"))
         acts.append(b.proc("sp_consumer_ai_serving", "[ops].[usp_record_consumer_status]",
                            {"PublicationId": E["P1"], "Consumer": "AI_SERVING", "Status": "READY"},
@@ -263,8 +263,8 @@ def publish_gold(b: Builder) -> dict:
     return pipeline(acts, {"p_publication_id": {"type": "string", "defaultValue": "PUB-B0"}})
 
 
-PIPELINES = {"pl_piep_setup_source": setup_source, "pl_piep_load_source": load_source,
-             "pl_piep_e2e": e2e, "pl_piep_publish_gold": publish_gold}
+PIPELINES = {"pl_zava_setup_source": setup_source, "pl_zava_load_source": load_source,
+             "pl_zava_e2e": e2e, "pl_zava_publish_gold": publish_gold}
 
 
 # ---------------------------------------------------------------- Fabric REST (az login)
@@ -334,23 +334,23 @@ def resolve_ids(config: dict, token: str) -> dict:
             raise SystemExit(f"{kind} '{name}' not found in {fabric['core_workspace_name']}.")
         return None
 
-    ids["lakehouse"] = item("Lakehouse", fabric.get("lakehouse_name", "lh_piep_core"))
-    ids["warehouse"] = item("Warehouse", fabric.get("warehouse_name", "wh_piep_gold"))
+    ids["lakehouse"] = item("Lakehouse", fabric.get("lakehouse_name", "lh_zava_core"))
+    ids["warehouse"] = item("Warehouse", fabric.get("warehouse_name", "wh_zava_gold"))
     ids["warehouse_endpoint"] = _call("GET", f"/workspaces/{core}/warehouses/{ids['warehouse']}",
                                       token=token)["properties"]["connectionString"]
     for notebook in ["nb_01_land_bronze", "nb_02_conform_master_ppdm", "nb_03_conform_production",
                      "nb_04_conform_business", "nb_05_validate_and_serve"]:
         ids[f"notebook:{notebook}"] = item("Notebook", notebook, required=False)
-    for dataflow in ["df_piep_target_etl", "df_piep_cost_etl"]:
+    for dataflow in ["df_zava_target_etl", "df_zava_cost_etl"]:
         ids[f"dataflow:{dataflow}"] = item("Dataflow", dataflow, required=False)
-    ids["semantic_model"] = item("SemanticModel", fabric.get("semantic_model_name", "sm_piep_performance"), required=False)
+    ids["semantic_model"] = item("SemanticModel", fabric.get("semantic_model_name", "sm_zava_performance"), required=False)
     connections = _call("GET", "/connections", token=token)["value"]
 
     def connection(name, kind):
         typed = [c for c in connections if c.get("connectionDetails", {}).get("type") == kind]
         return _named(typed, name, f"{kind} connection")["id"]
 
-    ids["sql_connection"] = connection(fabric.get("sql_connection_name", "conn_sql_piep_source"), "SQL")
+    ids["sql_connection"] = connection(fabric.get("sql_connection_name", "conn_sql_zava_source"), "SQL")
     if fabric.get("semantic_model_connection_name"):
         ids["semantic_model_connection"] = connection(fabric["semantic_model_connection_name"], "PowerBIDatasets")
     ai_name = fabric.get("ai_workspace_name")
@@ -368,8 +368,8 @@ def render(ids: dict, names=None) -> dict:
     selected = names or list(PIPELINES)
     missing = [k for k, v in ids.items() if v is None and (k.startswith("notebook:nb_0") and "nb_06" not in k
                                                            or k.startswith("dataflow:"))]
-    if missing and any(n == "pl_piep_e2e" for n in selected):
-        raise SystemExit(f"pl_piep_e2e needs these items first: {', '.join(m.split(':')[1] for m in missing)}")
+    if missing and any(n == "pl_zava_e2e" for n in selected):
+        raise SystemExit(f"pl_zava_e2e needs these items first: {', '.join(m.split(':')[1] for m in missing)}")
     return {name: PIPELINES[name](builder) for name in selected}
 
 

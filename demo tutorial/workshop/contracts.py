@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 
-DATASET_VERSION = "piep-ssot-1.0"
+DATASET_VERSION = "zava-ssot-1.0"
 SEED = 20261005
 AUTHORITY_POLICY_VERSION = "SA-2025.1"
 MAPPING_VERSION = "PPDM-ALIGN-1.0"

@@ -1,4 +1,4 @@
-// PIEP SSOT workshop - jalur privat untuk Azure SQL (opsional)
+// Zava Energy SSOT workshop - jalur privat untuk Azure SQL (opsional)
 // Gunakan bila kebijakan organisasi menonaktifkan public network access Azure SQL.
 // Membuat VNet, private endpoint SQL + private DNS, dan subnet terdelegasi untuk Fabric VNet data gateway.
 targetScope = 'resourceGroup'
@@ -8,13 +8,13 @@ param location string = resourceGroup().location
 @description('Nama logical server Azure SQL yang sudah dibuat oleh main.bicep.')
 param serverName string
 
-param vnetName string = 'vnet-piep-ssot'
+param vnetName string = 'vnet-zava-ssot'
 param addressPrefix string = '10.80.0.0/16'
 param privateEndpointSubnetPrefix string = '10.80.1.0/24'
 param gatewaySubnetPrefix string = '10.80.2.0/24'
 
 param tags object = {
-  workload: 'piep-ssot-workshop'
+  workload: 'zava-ssot-workshop'
   dataClassification: 'synthetic'
 }
 

@@ -1,13 +1,13 @@
-# Overview - PIEP Single Source of Truth di Microsoft Fabric
+# Overview - Zava Energy Single Source of Truth di Microsoft Fabric
 
 Baca halaman ini sebelum memulai [Lab 00](00-preflight.md). Halaman ini menjelaskan **masalah bisnis** yang diselesaikan workshop, **arsitektur** yang akan dibangun, **alur data**, dan **cara membaca lab**, sehingga setiap langkah teknis punya konteks.
 
 > [!IMPORTANT]
-> Semua data dalam workshop **sintetis**. Nama lapangan, sumur, operator, harga, dan biaya tidak mewakili aset atau angka PIEP yang sebenarnya. Model data **disejajarkan dengan konsep publik PPDM** (*PPDM-aligned*), bukan salinan skema resmi PPDM.
+> Semua data dalam workshop **sintetis**. Nama lapangan, sumur, operator, harga, dan biaya tidak mewakili aset atau angka Zava Energy yang sebenarnya. Model data **disejajarkan dengan konsep publik PPDM** (*PPDM-aligned*), bukan salinan skema resmi PPDM.
 
 ## 1. Konteks bisnis
 
-Pertamina Internasional Eksplorasi dan Produksi (PIEP) mengelola aset hulu di beberapa negara. Setiap aset dilaporkan oleh operator dan sistem yang berbeda. Akibatnya muncul tiga masalah klasik:
+Zava Energy, perusahaan hulu migas fiktif dalam workshop ini, mengelola aset hulu di beberapa negara. Setiap aset dilaporkan oleh operator dan sistem yang berbeda. Akibatnya muncul tiga masalah klasik:
 
 | Masalah | Contoh di workshop |
 |---|---|
@@ -73,21 +73,21 @@ flowchart LR
     subgraph Azure
         SQL[("Azure SQL<br/>src_dz · src_my · src_iq · ref · ctl")]
     end
-    subgraph Core["ws-piep-ppdm-demo"]
+    subgraph Core["ws-zava-ppdm-demo"]
         direction LR
         CP[Copy] --> BR[Bronze]
         DF[Dataflow Gen2<br/>ETL target & biaya]
         BR --> SV[Silver<br/>PPDM-aligned]
         DF --> SV
         SV --> SE[serve.*<br/>kandidat]
-        SE --> WH[("wh_piep_gold<br/>stg → gold + ops")]
-        WH --> SM[sm_piep_performance<br/>Direct Lake]
+        SE --> WH[("wh_zava_gold<br/>stg → gold + ops")]
+        WH --> SM[sm_zava_performance<br/>Direct Lake]
         SM --> RPT[Report]
     end
-    subgraph AI["ws-piep-ppdm-ai-demo"]
-        LAI[lh_piep_ai · ai.*] --> ONT[ont_piep_upstream]
-        DA1[da_piep_performance]
-        DA2[da_piep_asset_context]
+    subgraph AI["ws-zava-ppdm-ai-demo"]
+        LAI[lh_zava_ai · ai.*] --> ONT[ont_zava_upstream]
+        DA1[da_zava_performance]
+        DA2[da_zava_asset_context]
     end
     GEN --> SQL
     SQL --> CP
@@ -139,7 +139,7 @@ stateDiagram-v2
     APPROVAL_PENDING --> APPROVED: pemilik data menyetujui
     APPROVAL_PENDING --> REJECTED: pemilik data menolak
     APPROVAL_PENDING --> SUPERSEDED: kandidat baru datang
-    APPROVED --> PUBLISHED: pl_piep_publish_gold
+    APPROVED --> PUBLISHED: pl_zava_publish_gold
     PUBLISHED --> SUPERSEDED: publikasi berikutnya
     QUALITY_FAILED --> [*]
 ```
@@ -151,13 +151,13 @@ sequenceDiagram
     autonumber
     actor Eng as Data engineer
     participant PL as Pipeline Fabric
-    participant WH as wh_piep_gold
+    participant WH as wh_zava_gold
     actor Own as Pemilik data produksi
     actor User as Pengguna bisnis
-    Eng->>PL: jalankan pl_piep_e2e (p_batch_id)
+    Eng->>PL: jalankan pl_zava_e2e (p_batch_id)
     PL->>WH: kandidat PUB-xx = APPROVAL_PENDING
     Own->>WH: tinjau angka, lalu usp_approve_publication
-    Eng->>PL: jalankan pl_piep_publish_gold
+    Eng->>PL: jalankan pl_zava_publish_gold
     PL->>WH: Gold = PUB-xx (atomik, cek total kontrol)
     PL-->>User: semantic model + AI serving ter-refresh
     User->>User: report & agent menyebut "SSOT PUB-xx"
@@ -230,7 +230,7 @@ Pilih jalur sebelum Lab 03. Keduanya sudah diuji end-to-end.
 |---|---|---|
 | Kapan dipakai | Tenant mengizinkan akses publik Azure SQL | Kebijakan organisasi menonaktifkan akses publik |
 | Akses Fabric ke SQL | Koneksi cloud | VNet data gateway + private endpoint |
-| Memuat data | `python -m workshop load` dari laptop | Pipeline `pl_piep_load_source` dari OneLake |
+| Memuat data | `python -m workshop load` dari laptop | Pipeline `pl_zava_load_source` dari OneLake |
 | Kapasitas | Trial cukup untuk Lab 00–11 | Butuh kapasitas F berbayar (gateway) |
 
 Detail ada di [Lab 03](03-azure-sql-source.md#opsi-b---jaringan-privat-tanpa-endpoint-publik).
@@ -279,4 +279,4 @@ Dalam kelas mandiri, satu peserta memegang semua peran. Dalam kelompok, peran da
 - [Direct Lake overview](https://learn.microsoft.com/fabric/fundamentals/direct-lake-overview)
 - [Fabric data agent concepts](https://learn.microsoft.com/fabric/data-science/concept-data-agent)
 - [PPDM - What Is A Well? components](https://whatisawell.ppdm.org/components)
-- Dokumen konteks: [PIEP, data, dan Fabric](../../PERTAMINA_PIEP_KONTEKS_BISNIS_DATA_DAN_FABRIC.md) · [PPDM dan relevansinya untuk PIEP](../../PPDM_DAN_RELEVANSINYA_UNTUK_PIEP.md) · [Rencana demo](../../DEMO_PLAN_PIEP_PPDM_MICROSOFT_FABRIC_END_TO_END.md)
+- Dokumen konteks: [Rencana demo](../../DEMO_PLAN_ZAVA_ENERGY_PPDM_MICROSOFT_FABRIC_END_TO_END.md) · [PPDM Association](https://ppdm.org/)

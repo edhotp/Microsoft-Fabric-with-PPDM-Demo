@@ -16,7 +16,7 @@
      "connection": "<sql_connection>"
     },
     "typeProperties": {
-     "database": "sqldb_piep_source_demo",
+     "database": "sqldb_zava_source_demo",
      "scripts": [
       {
        "type": "NonQuery",
@@ -180,31 +180,31 @@
      "connection": "<sql_connection>"
     },
     "typeProperties": {
-     "database": "sqldb_piep_source_demo",
+     "database": "sqldb_zava_source_demo",
      "scripts": [
       {
        "type": "NonQuery",
-       "text": "/*\n    PIEP SSOT workshop - Azure SQL source security (least privilege)\n    Jalankan sebagai Microsoft Entra admin database, SETELAH 01_create_source_schema.sql.\n\n    Ganti placeholder sebelum menjalankan:\n      <LOADER_ENTRA_PRINCIPAL>  : UPN fasilitator/peserta yang memuat data (mis. user@contoso.com)\n      <FABRIC_READER_PRINCIPAL> : identitas koneksi Fabric (user organizational account,\n                                  workspace identity, atau service principal untuk Copy)\n    Semua akun memakai autentikasi Microsoft Entra; tidak ada SQL login/password.\n*/\nSET NOCOUNT ON;"
+       "text": "/*\n    Zava Energy SSOT workshop - Azure SQL source security (least privilege)\n    Jalankan sebagai Microsoft Entra admin database, SETELAH 01_create_source_schema.sql.\n\n    Ganti placeholder sebelum menjalankan:\n      <LOADER_ENTRA_PRINCIPAL>  : UPN fasilitator/peserta yang memuat data (mis. user@contoso.com)\n      <FABRIC_READER_PRINCIPAL> : identitas koneksi Fabric (user organizational account,\n                                  workspace identity, atau service principal untuk Copy)\n    Semua akun memakai autentikasi Microsoft Entra; tidak ada SQL login/password.\n*/\nSET NOCOUNT ON;"
       },
       {
        "type": "NonQuery",
-       "text": "\nIF DATABASE_PRINCIPAL_ID(N'piep_source_reader') IS NULL\n    CREATE ROLE piep_source_reader AUTHORIZATION dbo;"
+       "text": "\nIF DATABASE_PRINCIPAL_ID(N'zava_source_reader') IS NULL\n    CREATE ROLE zava_source_reader AUTHORIZATION dbo;"
       },
       {
        "type": "NonQuery",
-       "text": "IF DATABASE_PRINCIPAL_ID(N'piep_source_loader') IS NULL\n    CREATE ROLE piep_source_loader AUTHORIZATION dbo;"
+       "text": "IF DATABASE_PRINCIPAL_ID(N'zava_source_loader') IS NULL\n    CREATE ROLE zava_source_loader AUTHORIZATION dbo;"
       },
       {
        "type": "NonQuery",
-       "text": "\n-- Reader: hanya baca untuk Fabric Copy activity dan Dataflow Gen2\nGRANT SELECT ON SCHEMA::ref    TO piep_source_reader;\nGRANT SELECT ON SCHEMA::src_dz TO piep_source_reader;\nGRANT SELECT ON SCHEMA::src_my TO piep_source_reader;\nGRANT SELECT ON SCHEMA::src_iq TO piep_source_reader;\nGRANT SELECT ON SCHEMA::ctl    TO piep_source_reader;"
+       "text": "\n-- Reader: hanya baca untuk Fabric Copy activity dan Dataflow Gen2\nGRANT SELECT ON SCHEMA::ref    TO zava_source_reader;\nGRANT SELECT ON SCHEMA::src_dz TO zava_source_reader;\nGRANT SELECT ON SCHEMA::src_my TO zava_source_reader;\nGRANT SELECT ON SCHEMA::src_iq TO zava_source_reader;\nGRANT SELECT ON SCHEMA::ctl    TO zava_source_reader;"
       },
       {
        "type": "NonQuery",
-       "text": "\n-- Loader: memuat batch sintetis lewat `python -m workshop load` (tanpa hak DDL)\nGRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::ref    TO piep_source_loader;\nGRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::src_dz TO piep_source_loader;\nGRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::src_my TO piep_source_loader;\nGRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::src_iq TO piep_source_loader;\nGRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::ctl    TO piep_source_loader;"
+       "text": "\n-- Loader: memuat batch sintetis lewat `python -m workshop load` (tanpa hak DDL)\nGRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::ref    TO zava_source_loader;\nGRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::src_dz TO zava_source_loader;\nGRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::src_my TO zava_source_loader;\nGRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::src_iq TO zava_source_loader;\nGRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::ctl    TO zava_source_loader;"
       },
       {
        "type": "NonQuery",
-       "text": "\nSELECT r.name AS role_name, m.name AS member_name\nFROM sys.database_role_members AS drm\nJOIN sys.database_principals AS r ON r.principal_id = drm.role_principal_id\nJOIN sys.database_principals AS m ON m.principal_id = drm.member_principal_id\nWHERE r.name IN (N'piep_source_reader', N'piep_source_loader')\nORDER BY r.name, m.name;"
+       "text": "\nSELECT r.name AS role_name, m.name AS member_name\nFROM sys.database_role_members AS drm\nJOIN sys.database_principals AS r ON r.principal_id = drm.role_principal_id\nJOIN sys.database_principals AS m ON m.principal_id = drm.member_principal_id\nWHERE r.name IN (N'zava_source_reader', N'zava_source_loader')\nORDER BY r.name, m.name;"
       }
      ],
      "scriptBlockExecutionTimeout": "02:00:00"
@@ -232,11 +232,11 @@
      "connection": "<sql_connection>"
     },
     "typeProperties": {
-     "database": "sqldb_piep_source_demo",
+     "database": "sqldb_zava_source_demo",
      "scripts": [
       {
        "type": "Query",
-       "text": "/*\n    PIEP SSOT workshop - validasi sumber Azure SQL (read-only)\n    Jalankan setelah memuat batch dengan `python -m workshop load`.\n    Ganti nilai @batch_id sesuai batch yang ingin diperiksa.\n*/\nSET NOCOUNT ON;\nDECLARE @batch_id varchar(10) = 'B0';\n\n-- 1. Status batch: hanya batch SEALED yang boleh diambil oleh pipeline Fabric\nSELECT batch_id, parent_batch_id, dataset_version, state, period_start, period_end, sealed_at_utc\nFROM ctl.source_batch\nORDER BY sealed_at_utc;\n\n-- 2. Rekonsiliasi row count per entitas terhadap manifest ctl.batch_entity\nDECLARE @sql nvarchar(max) = N'';\nSELECT @sql = @sql + N'\nSELECT ''' + c.entity_name + N''' AS entity_name, COUNT_BIG(*) AS actual_rows\nFROM ' + QUOTENAME(c.source_schema) + N'.' + QUOTENAME(c.source_table) + N'\nWHERE batch_id = @b UNION ALL'\nFROM ctl.entity_config AS c\nWHERE c.enabled = 1 AND c.entity_kind <> 'CONTROL'\nORDER BY c.ordinal;\nSET @sql = LEFT(@sql, LEN(@sql) - LEN(N' UNION ALL'));\nSET @sql = N'WITH actual AS (' + @sql + N')\nSELECT m.entity_name, m.row_count AS expected_rows, a.actual_rows,\n       CASE WHEN m.row_count = a.actual_rows THEN ''OK'' ELSE ''MISMATCH'' END AS status\nFROM ctl.batch_entity AS m\nJOIN actual AS a ON a.entity_name = m.entity_name\nWHERE m.batch_id = @b\nORDER BY m.entity_name;';\nEXEC sys.sp_executesql @sql, N'@b varchar(10)', @b = @batch_id;\n\n-- 3. Gambaran sumber produksi per sistem (perhatikan perbedaan satuan & nama kolom IQ)\nSELECT 'SRC_DZ_PROD' AS source_system, commodity, unit, COUNT(*) AS rows_in_batch\nFROM src_dz.production_report WHERE batch_id = @batch_id GROUP BY commodity, unit\nUNION ALL\nSELECT 'SRC_MY_PROD', commodity, unit, COUNT(*)\nFROM src_my.production_report WHERE batch_id = @batch_id GROUP BY commodity, unit\nUNION ALL\nSELECT 'SRC_MY_OPS', commodity, unit, COUNT(*)\nFROM src_my.production_provisional WHERE batch_id = @batch_id GROUP BY commodity, unit\nUNION ALL\nSELECT 'SRC_IQ_PROD', product, qty_unit, COUNT(*)\nFROM src_iq.daily_volumes WHERE batch_id = @batch_id GROUP BY product, qty_unit\nORDER BY source_system, commodity;\n\n-- 4. Source authority register yang berlaku untuk batch ini\nSELECT policy_version, domain, source_system, scope, priority, eligible_status, valid_from, valid_to, owner_role\nFROM ref.source_authority\nWHERE batch_id = @batch_id\nORDER BY domain, scope, priority;\n\n-- 5. Fixture insiden INC-MY-001 (hanya ada di B0)\nSELECT e.incident_id, COUNT(DISTINCT e.event_id) AS downtime_events,\n       SUM(DATEDIFF(MINUTE, e.start_utc, e.end_utc)) / 60.0 AS equipment_downtime_hours,\n       (SELECT COUNT(DISTINCT l.well_ref) FROM src_my.loss_allocation AS l\n         WHERE l.batch_id = @batch_id\n           AND l.event_id IN (SELECT event_id FROM src_my.downtime_event\n                              WHERE batch_id = @batch_id AND incident_id = 'INC-MY-001')) AS affected_wells\nFROM src_my.downtime_event AS e\nWHERE e.batch_id = @batch_id AND e.incident_id = 'INC-MY-001'\nGROUP BY e.incident_id;"
+       "text": "/*\n    Zava Energy SSOT workshop - validasi sumber Azure SQL (read-only)\n    Jalankan setelah memuat batch dengan `python -m workshop load`.\n    Ganti nilai @batch_id sesuai batch yang ingin diperiksa.\n*/\nSET NOCOUNT ON;\nDECLARE @batch_id varchar(10) = 'B0';\n\n-- 1. Status batch: hanya batch SEALED yang boleh diambil oleh pipeline Fabric\nSELECT batch_id, parent_batch_id, dataset_version, state, period_start, period_end, sealed_at_utc\nFROM ctl.source_batch\nORDER BY sealed_at_utc;\n\n-- 2. Rekonsiliasi row count per entitas terhadap manifest ctl.batch_entity\nDECLARE @sql nvarchar(max) = N'';\nSELECT @sql = @sql + N'\nSELECT ''' + c.entity_name + N''' AS entity_name, COUNT_BIG(*) AS actual_rows\nFROM ' + QUOTENAME(c.source_schema) + N'.' + QUOTENAME(c.source_table) + N'\nWHERE batch_id = @b UNION ALL'\nFROM ctl.entity_config AS c\nWHERE c.enabled = 1 AND c.entity_kind <> 'CONTROL'\nORDER BY c.ordinal;\nSET @sql = LEFT(@sql, LEN(@sql) - LEN(N' UNION ALL'));\nSET @sql = N'WITH actual AS (' + @sql + N')\nSELECT m.entity_name, m.row_count AS expected_rows, a.actual_rows,\n       CASE WHEN m.row_count = a.actual_rows THEN ''OK'' ELSE ''MISMATCH'' END AS status\nFROM ctl.batch_entity AS m\nJOIN actual AS a ON a.entity_name = m.entity_name\nWHERE m.batch_id = @b\nORDER BY m.entity_name;';\nEXEC sys.sp_executesql @sql, N'@b varchar(10)', @b = @batch_id;\n\n-- 3. Gambaran sumber produksi per sistem (perhatikan perbedaan satuan & nama kolom IQ)\nSELECT 'SRC_DZ_PROD' AS source_system, commodity, unit, COUNT(*) AS rows_in_batch\nFROM src_dz.production_report WHERE batch_id = @batch_id GROUP BY commodity, unit\nUNION ALL\nSELECT 'SRC_MY_PROD', commodity, unit, COUNT(*)\nFROM src_my.production_report WHERE batch_id = @batch_id GROUP BY commodity, unit\nUNION ALL\nSELECT 'SRC_MY_OPS', commodity, unit, COUNT(*)\nFROM src_my.production_provisional WHERE batch_id = @batch_id GROUP BY commodity, unit\nUNION ALL\nSELECT 'SRC_IQ_PROD', product, qty_unit, COUNT(*)\nFROM src_iq.daily_volumes WHERE batch_id = @batch_id GROUP BY product, qty_unit\nORDER BY source_system, commodity;\n\n-- 4. Source authority register yang berlaku untuk batch ini\nSELECT policy_version, domain, source_system, scope, priority, eligible_status, valid_from, valid_to, owner_role\nFROM ref.source_authority\nWHERE batch_id = @batch_id\nORDER BY domain, scope, priority;\n\n-- 5. Fixture insiden INC-MY-001 (hanya ada di B0)\nSELECT e.incident_id, COUNT(DISTINCT e.event_id) AS downtime_events,\n       SUM(DATEDIFF(MINUTE, e.start_utc, e.end_utc)) / 60.0 AS equipment_downtime_hours,\n       (SELECT COUNT(DISTINCT l.well_ref) FROM src_my.loss_allocation AS l\n         WHERE l.batch_id = @batch_id\n           AND l.event_id IN (SELECT event_id FROM src_my.downtime_event\n                              WHERE batch_id = @batch_id AND incident_id = 'INC-MY-001')) AS affected_wells\nFROM src_my.downtime_event AS e\nWHERE e.batch_id = @batch_id AND e.incident_id = 'INC-MY-001'\nGROUP BY e.incident_id;"
       }
      ],
      "scriptBlockExecutionTimeout": "02:00:00"

@@ -30,7 +30,7 @@ Harness [`notebook_harness.py`](notebook_harness.py) menyimulasikan dua layanan 
 Selain itu, harness mengganti `notebookutils.notebook.exit` dan menangani `%run nb_00_common`, lalu menyuntikkan parameter setelah parameter cell seperti Notebook activity.
 
 > [!NOTE]
-> **Windows tanpa `winutils.exe`:** Hadoop lokal membutuhkan izin file POSIX. Set `PIEP_TEST_CLASSPATH` ke JAR Delta (`delta-spark_2.12-3.2.1.jar`, `delta-storage-3.2.1.jar`) dan JAR uji yang menyediakan kelas `localtest.NoPermissionLocalFileSystem` dan `localtest.NoPermissionLocalFs`. Kelas tersebut adalah turunan `LocalFileSystem` yang mengabaikan `setPermission`. Pengaturan ini **hanya** untuk pengujian lokal dan tidak dipakai di Fabric. Di Linux, macOS, atau WSL, cukup gunakan `configure_spark_with_delta_pip` bawaan tanpa variabel tersebut.
+> **Windows tanpa `winutils.exe`:** Hadoop lokal membutuhkan izin file POSIX. Set `ZAVA_TEST_CLASSPATH` ke JAR Delta (`delta-spark_2.12-3.2.1.jar`, `delta-storage-3.2.1.jar`) dan JAR uji yang menyediakan kelas `localtest.NoPermissionLocalFileSystem` dan `localtest.NoPermissionLocalFs`. Kelas tersebut adalah turunan `LocalFileSystem` yang mengabaikan `setPermission`. Pengaturan ini **hanya** untuk pengujian lokal dan tidak dipakai di Fabric. Di Linux, macOS, atau WSL, cukup gunakan `configure_spark_with_delta_pip` bawaan tanpa variabel tersebut.
 
 ## Kapan menjalankan ulang aset hasil generate
 

@@ -101,7 +101,7 @@ def simulate_copy(spark, pack: dict, landing_root: Path) -> None:
 
 
 def simulate_dataflows(spark, pack: dict, table_format: str = "delta") -> None:
-    """Reproduce df_piep_target_etl and df_piep_cost_etl output (Replace into stg_df)."""
+    """Reproduce df_zava_target_etl and df_zava_cost_etl output (Replace into stg_df)."""
     batch, tables = pack["meta"]["batch_id"], pack["tables"]
     target_rows = []
     for row in tables["ref.target_monthly"]:

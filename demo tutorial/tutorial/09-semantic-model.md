@@ -4,11 +4,11 @@ Semantic model menerapkan **kontrak KPI** di atas Gold. Setiap report dan data a
 
 Dalam lab ini Anda akan:
 
-- [ ] Membuat semantic model `sm_piep_performance` dari tabel `gold` dan `ops.publication`.
+- [ ] Membuat semantic model `sm_zava_performance` dari tabel `gold` dan `ops.publication`.
 - [ ] Membuat relasi star schema, menandai tabel tanggal, dan menyembunyikan kolom teknis.
 - [ ] Menambahkan semua measure sekaligus melalui DAX query view.
 - [ ] Membuat role RLS per negara dan memvalidasi DAX terhadap SQL.
-- [ ] Menambahkan refresh semantic model ke `pl_piep_publish_gold`.
+- [ ] Menambahkan refresh semantic model ke `pl_zava_publish_gold`.
 
 ## Prasyarat
 
@@ -44,8 +44,8 @@ Tabel `publication` berdiri sendiri, tanpa relasi, dan dipakai oleh measure bukt
 
 ## 1. Buat semantic model
 
-1. Buka `wh_piep_gold`, lalu pilih **Reporting** > **New semantic model**.
-2. Beri nama **`sm_piep_performance`**.
+1. Buka `wh_zava_gold`, lalu pilih **Reporting** > **New semantic model**.
+2. Beri nama **`sm_zava_performance`**.
 3. Pilih **13 tabel** dari schema `gold`: `dim_date`, `dim_asset`, `dim_well`, `dim_equipment`, `dim_incident`, `dim_scenario`, `dim_cost_category`, `fact_production_daily`, `fact_target_daily`, `fact_operating_cost_monthly`, `fact_downtime_event`, `fact_loss_allocation`, dan `source_decision`.
 4. Tambahkan juga tabel **`ops.publication`**. Jangan memilih view; view membuat Direct Lake fallback ke DirectQuery.
 5. Pilih **Confirm**.
@@ -79,7 +79,7 @@ Tabel `publication` berdiri sendiri, tanpa relasi, dan dipakai oleh measure bukt
 ## 5. Validasi DAX terhadap SQL
 
 1. Di DAX query view, jalankan setiap query dalam [`validation_queries.dax`](../assets/powerbi/validation_queries.dax).
-2. Di `wh_piep_gold`, jalankan [`04_validate_gold.sql`](../assets/sql/warehouse/04_validate_gold.sql).
+2. Di `wh_zava_gold`, jalankan [`04_validate_gold.sql`](../assets/sql/warehouse/04_validate_gold.sql).
 3. Isi tabel berikut. Angka DAX dan SQL **harus identik**.
 
 | Ukuran (`PUB-D1`) | SQL | DAX | Kunci jawaban |
@@ -93,8 +93,8 @@ Tabel `publication` berdiri sendiri, tanpa relasi, dan dipakai oleh measure bukt
 
 ## 6. Tambahkan refresh ke pipeline publikasi
 
-1. Buka `pl_piep_publish_gold`.
-2. Tambahkan aktivitas **2** `sm_refresh_piep_performance` (**Semantic model refresh**) dan aktivitas **3** `sp_consumer_semantic_model` dari [lembar aktivitas](../assets/fabric/pipelines/pipeline-activity-sheet.md#pl_piep_publish_gold---publikasi-setelah-approval-bisnis).
+1. Buka `pl_zava_publish_gold`.
+2. Tambahkan aktivitas **2** `sm_refresh_zava_performance` (**Semantic model refresh**) dan aktivitas **3** `sp_consumer_semantic_model` dari [lembar aktivitas](../assets/fabric/pipelines/pipeline-activity-sheet.md#pl_zava_publish_gold---publikasi-setelah-approval-bisnis).
 3. Jalankan pipeline dengan `p_publication_id = PUB-D1`. Prosedur publish mengenali bahwa publikasi sudah `PUBLISHED`, sehingga hanya langkah refresh yang benar-benar bekerja.
 4. Periksa `SELECT * FROM ops.consumer_status;`. Hasilnya harus menampilkan `SEMANTIC_MODEL` dan `REFRESHED` untuk `PUB-D1`.
 

@@ -9,7 +9,7 @@ Salin file ini ke `evidence/agent-evaluation-<nama>.md` (folder `evidence/` tida
 | Publikasi aktif Gold (`ops.vw_current_publication`) | |
 | `business_publication_id` di `ai.publication` | |
 | Ontology terakhir di-refresh (UTC) | |
-| Versi instruksi agent | `da_piep_performance` v1 / `da_piep_asset_context` v1 |
+| Versi instruksi agent | `da_zava_performance` v1 / `da_zava_asset_context` v1 |
 
 ## Hasil per kasus
 
@@ -17,10 +17,10 @@ Gunakan [`agent_evaluation_cases.csv`](agent_evaluation_cases.csv). Untuk setiap
 
 | Kasus | Agent | Jawaban agent (ringkas) | Query yang dijalankan agent (SQL/DAX) | Publikasi yang disebut | Lulus? | Catatan |
 |---|---|---|---|---|---|---|
-| EV01 | da_piep_performance | | | | ☐ | |
-| EV02 | da_piep_performance | | | | ☐ | |
+| EV01 | da_zava_performance | | | | ☐ | |
+| EV02 | da_zava_performance | | | | ☐ | |
 | … | | | | | | |
-| EV24 | da_piep_asset_context | | | | ☐ | |
+| EV24 | da_zava_asset_context | | | | ☐ | |
 
 ## Konsistensi lintas kanal
 

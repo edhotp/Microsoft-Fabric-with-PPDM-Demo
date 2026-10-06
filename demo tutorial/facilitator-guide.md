@@ -1,12 +1,12 @@
 # Panduan fasilitator
 
-Panduan ini membantu fasilitator menyiapkan, menjalankan, dan memulihkan workshop **PIEP SSOT di Microsoft Fabric**.
+Panduan ini membantu fasilitator menyiapkan, menjalankan, dan memulihkan workshop **Zava Energy SSOT di Microsoft Fabric**.
 
 ## Agenda dua hari
 
 | Waktu | Hari 1 | Hari 2 |
 |---|---|---|
-| 08.30–09.15 | Pembukaan, konteks PIEP dan PPDM, Lab 00 | Rekap; mulai batch express H1/X1 |
+| 08.30–09.15 | Pembukaan, konteks Zava Energy dan PPDM, Lab 00 | Rekap; mulai batch express H1/X1 |
 | 09.15–10.15 | Lab 01 - Kontrak SSOT | Lab 09 - Semantic model |
 | 10.30–11.15 | Lab 02 - Generator | Lab 10 - Report |
 | 11.15–12.15 | Lab 03 - Azure SQL | Lab 10 (lanjutan) |
@@ -22,7 +22,7 @@ Panduan ini membantu fasilitator menyiapkan, menjalankan, dan memulihkan worksho
 
 1. Pastikan gate G1–G6 di [Lab 00](tutorial/00-preflight.md) terpenuhi, terutama **kapasitas berbayar F2+** untuk data agent dan tenant setting ontology.
 2. Uji seluruh jalur sekali di tenant workshop dengan satu akun peserta.
-3. Siapkan resource group `rg-piep-ppdm-demo` dan beri peserta peran Contributor. Alternatifnya, deploy satu Azure SQL per peserta sebelum sesi.
+3. Siapkan resource group `rg-zava-ppdm-demo` dan beri peserta peran Contributor. Alternatifnya, deploy satu Azure SQL per peserta sebelum sesi.
 4. Bagikan folder `demo tutorial` melalui zip atau repository Git.
 5. Jalankan pemeriksaan lokal paket:
 
@@ -68,9 +68,9 @@ Angka berikut diukur saat seluruh rangkaian B0–S2 dijalankan end-to-end di Fab
 
 | Langkah | Durasi |
 |---|---|
-| `pl_piep_load_source` (opsi B) per batch | 3–5 menit (B0 ±5 menit) |
-| `pl_piep_e2e` per batch (Copy + 5 notebook + 2 Dataflow + staging) | 26–30 menit |
-| `pl_piep_publish_gold` (publish + refresh model + `nb_06`) | 4–6 menit |
+| `pl_zava_load_source` (opsi B) per batch | 3–5 menit (B0 ±5 menit) |
+| `pl_zava_e2e` per batch (Copy + 5 notebook + 2 Dataflow + staging) | 26–30 menit |
+| `pl_zava_publish_gold` (publish + refresh model + `nb_06`) | 4–6 menit |
 | Refresh graph ontology | ±5 menit |
 | Evaluasi 24 kasus data agent (`evaluate-agents`, 1 putaran) | ±20 menit |
 
@@ -81,7 +81,7 @@ Angka berikut diukur saat seluruh rangkaian B0–S2 dijalankan end-to-end di Fab
 
 | Situasi | Tindakan |
 |---|---|
-| Peserta tertinggal di Lab 04–06 | Jalankan `pl_piep_e2e` lengkap dari Lab 08 untuk batch berjalan, lalu lanjutkan |
+| Peserta tertinggal di Lab 04–06 | Jalankan `pl_zava_e2e` lengkap dari Lab 08 untuk batch berjalan, lalu lanjutkan |
 | Azure SQL peserta bermasalah | Arahkan koneksi ke database fasilitator **hanya-baca**; peserta tidak menjalankan `load` |
 | Kapasitas penuh atau notebook antre | Aktifkan high concurrency dan session tag; kurangi paralelisme ForEach menjadi 4 |
 | Data agent tidak tersedia (G5 gagal) | Demokan dari tenant fasilitator; peserta tetap mengerjakan evaluasi lintas kanal SQL vs DAX |
@@ -98,5 +98,5 @@ Angka berikut diukur saat seluruh rangkaian B0–S2 dijalankan end-to-end di Fab
 ## Pertanyaan diskusi
 
 - Siapa pemilik nyata setiap baris di `source_authority_register.csv` di organisasi Anda?
-- Proses approval apa yang sudah ada, misalnya untuk laporan produksi bulanan ke SKK Migas atau mitra, dan bagaimana proses itu dipetakan ke `usp_approve_publication`?
+- Proses approval apa yang sudah ada, misalnya untuk laporan produksi bulanan ke regulator atau mitra, dan bagaimana proses itu dipetakan ke `usp_approve_publication`?
 - Area PPDM mana yang paling bernilai untuk distandarkan pertama kali?

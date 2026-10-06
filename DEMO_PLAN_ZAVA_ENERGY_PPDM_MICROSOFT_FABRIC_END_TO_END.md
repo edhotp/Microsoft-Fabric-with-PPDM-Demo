@@ -1,10 +1,10 @@
-# Demo Plan End-to-End: PIEP Single Source of Truth dengan Microsoft Fabric, PPDM-Aligned
+# Demo Plan End-to-End: Zava Energy Single Source of Truth dengan Microsoft Fabric, PPDM-Aligned
 
 **Versi:** 2.1 - SSOT-first, diselaraskan dengan paket tutorial  
 **Tanggal:** 5 Oktober 2026  
 **Status:** rencana demo dan kurikulum. Paket tutorial siap ikut ada di folder [`demo tutorial`](./demo%20tutorial/README.md); bukan hasil deployment.  
-**Nama demo:** **PIEP Governed Upstream Single Source of Truth**.  
-**Asumsi istilah:** penyebutan "PIPE" pada permintaan dimaknai sebagai **PIEP**.
+**Nama demo:** **Zava Energy Governed Upstream Single Source of Truth**.  
+**Skenario:** Zava Energy adalah perusahaan hulu migas **fiktif** dengan aset di beberapa negara; seluruh data bersifat sintetis.
 
 **Penyelarasan v2.1 dengan paket tutorial:**
 
@@ -12,12 +12,9 @@
 2. Paket batch membentuk **satu rantai linear** `B0 → B1 → C1 → D1 → H1 → X1 → Q1 → Q2 → S1 → S2`; `H1`/`X1` ditempatkan sebelum drill `Q1`/`Q2` agar dapat dijalankan di latar belakang. F1 adalah parameter drill (`p_fail_after_bronze`), bukan paket data.
 3. Proyeksi AI dijalankan oleh `nb_06_prepare_ai_serving` di workspace AI dan membaca kandidat `serve.*` lintas workspace untuk `PublicationId` yang sama dengan Gold.
 
-Dokumen pendamping:
+Dokumen pendamping: [paket tutorial workshop](./demo%20tutorial/README.md) dan [PPDM Association](https://ppdm.org/).
 
-- [Konteks bisnis, data PIEP, dan Microsoft Fabric](./PERTAMINA_PIEP_KONTEKS_BISNIS_DATA_DAN_FABRIC.md).
-- [PPDM dan relevansinya untuk PIEP](./PPDM_DAN_RELEVANSINYA_UNTUK_PIEP.md).
-
-> **Batas klaim:** seluruh nama aset, identitas sumur, volume, biaya, insiden, dan kepemilikan dalam demo adalah sintetis. Negara digunakan sebagai konteks pembelajaran, bukan representasi portofolio aktual. Penggunaan PPDM maupun Fabric secara internal oleh PIEP tidak diasumsikan. Baseline adalah **SSOT analitis dengan model kanonis PPDM-aligned**, bukan implementasi atau sertifikasi kepatuhan penuh terhadap skema PPDM resmi. Pemakaian artefak resmi di luar referensi publik tetap memerlukan hak penggunaan yang sah.
+> **Batas klaim:** seluruh nama aset, identitas sumur, volume, biaya, insiden, dan kepemilikan dalam demo adalah sintetis. Negara digunakan sebagai konteks pembelajaran, bukan representasi portofolio aktual. Penggunaan PPDM maupun Fabric secara internal oleh Zava Energy tidak diasumsikan. Baseline adalah **SSOT analitis dengan model kanonis PPDM-aligned**, bukan implementasi atau sertifikasi kepatuhan penuh terhadap skema PPDM resmi. Pemakaian artefak resmi di luar referensi publik tetap memerlukan hak penggunaan yang sah.
 
 **Perubahan utama dari versi 1.0:** fokus bergeser dari demonstrasi rangkaian produk dan subset skema PPDM resmi menjadi pembuktian **satu identitas, satu sumber berwenang per domain, satu definisi KPI, dan satu versi publikasi yang dapat ditelusuri**. Sembilan komponen teknologi tetap dipertahankan. PPDM menjadi acuan alignment; akses model resmi bukan prasyarat baseline workshop.
 
@@ -49,9 +46,9 @@ Dokumen pendamping:
 
 Demo harus menjawab pertanyaan bisnis berikut:
 
-> Bagaimana PIEP memperoleh satu versi data hulu internasional yang dipercaya untuk keputusan korporat, ketika beberapa sumber memiliki nama objek, satuan, status persetujuan, dan angka yang berbeda; lalu memastikan Power BI, ontology, dan data agents menggunakan identitas, definisi, serta publikasi yang sama?
+> Bagaimana Zava Energy memperoleh satu versi data hulu internasional yang dipercaya untuk keputusan korporat, ketika beberapa sumber memiliki nama objek, satuan, status persetujuan, dan angka yang berbeda; lalu memastikan Power BI, ontology, dan data agents menggunakan identitas, definisi, serta publikasi yang sama?
 
-PIEP berfokus pada aset dan bisnis hulu luar negeri; konteks lintas negara ini menjadi alasan pemilihan use case integrasi, produksi, dan keandalan, bukan transaksi ritel BBM. [S01]
+Zava Energy berfokus pada aset dan bisnis hulu luar negeri; konteks lintas negara ini menjadi alasan pemilihan use case integrasi, produksi, dan keandalan, bukan transaksi ritel BBM.
 
 ### 1.1 Pemetaan sembilan kebutuhan
 
@@ -101,7 +98,7 @@ Perbedaan hasil karena RLS atau versi publikasi tidak disebut inkonsistensi apab
 
 | Area | Keputusan |
 |---|---|
-| Fokus bisnis | SSOT PIEP yang dipercaya untuk produksi, loss, biaya, identitas aset, dan keputusan portofolio |
+| Fokus bisnis | SSOT Zava Energy yang dipercaya untuk produksi, loss, biaya, identitas aset, dan keputusan portofolio |
 | Model PPDM | **PPDM-aligned canonical model** berbasis konsep dan referensi yang dapat digunakan secara sah; bukan salinan skema resmi |
 | Otoritas data | Source authority per domain/atribut, approval, effective dates, serta lineage wajib sebelum publikasi |
 | Penyimpanan | Satu Lakehouse utama untuk Bronze/Silver; satu **Fabric Warehouse** untuk Gold |
@@ -137,7 +134,7 @@ Catatan berdasarkan dokumentasi yang diperiksa:
 
 ### 2.3 Source authority register
 
-Tabel ini adalah **rancangan kewenangan untuk simulasi workshop**, bukan kebijakan internal PIEP yang telah diverifikasi. Dalam implementasi nyata, nama sistem dan pemilik disetujui bersama PIEP.
+Tabel ini adalah **rancangan kewenangan untuk simulasi workshop**, bukan kebijakan internal Zava Energy yang telah diverifikasi. Dalam implementasi nyata, nama sistem dan pemilik disetujui bersama Zava Energy.
 
 | Domain | Sumber berwenang dalam demo | Sumber pembanding | Pemilik keputusan yang disimulasikan |
 |---|---|---|---|
@@ -242,19 +239,19 @@ Salinan fisik untuk staging, historisasi, atau serving tidak melanggar SSOT sela
 
 | Komponen | Nama usulan | Fungsi |
 |---|---|---|
-| Azure resource group | `rg-piep-ppdm-demo` | Batas resource demo, tag owner dan expiry |
+| Azure resource group | `rg-zava-ppdm-demo` | Batas resource demo, tag owner dan expiry |
 | Azure SQL logical server | Nama unik ditentukan saat provisioning | Hosting database sumber |
-| Azure SQL database | `sqldb_piep_source_demo` | Sumber operasional sintetis dan kontrol sumber |
-| Workspace inti | `ws-piep-ppdm-demo` | Lakehouse, Warehouse, pipelines, notebooks, dataflows, semantic model, report |
-| Lakehouse inti | `lh_piep_core` | Schema-enabled; Bronze, Silver, staging, quarantine, dan metadata |
-| Warehouse | `wh_piep_gold` | Data product SSOT analitis, authority/approval evidence, dan publication manifest |
-| Workspace AI | `ws-piep-ppdm-ai-demo` | Isolasi sumber dan pengguna AI; capacity/region sama dengan inti |
-| Lakehouse AI | `lh_piep_ai` | Managed serving tables untuk ontology, tanpa shortcut sebagai binding baseline |
-| Semantic model | `sm_piep_performance` | KPI bisnis, metadata, dan RLS |
-| Power BI report | `PIEP SSOT - Performance & Data Trust` | Lima halaman utama dan satu drillthrough; technical item names lain dipertahankan |
-| Ontology | `ont_piep_upstream` | Konsep, hubungan, dan binding objek bisnis |
-| Data agent KPI | `da_piep_performance` | Pertanyaan numerik atas semantic model |
-| Data agent aset | `da_piep_asset_context` | Pertanyaan hubungan atas ontology dan sumber terkurasi |
+| Azure SQL database | `sqldb_zava_source_demo` | Sumber operasional sintetis dan kontrol sumber |
+| Workspace inti | `ws-zava-ppdm-demo` | Lakehouse, Warehouse, pipelines, notebooks, dataflows, semantic model, report |
+| Lakehouse inti | `lh_zava_core` | Schema-enabled; Bronze, Silver, staging, quarantine, dan metadata |
+| Warehouse | `wh_zava_gold` | Data product SSOT analitis, authority/approval evidence, dan publication manifest |
+| Workspace AI | `ws-zava-ppdm-ai-demo` | Isolasi sumber dan pengguna AI; capacity/region sama dengan inti |
+| Lakehouse AI | `lh_zava_ai` | Managed serving tables untuk ontology, tanpa shortcut sebagai binding baseline |
+| Semantic model | `sm_zava_performance` | KPI bisnis, metadata, dan RLS |
+| Power BI report | `Zava Energy SSOT - Performance & Data Trust` | Lima halaman utama dan satu drillthrough; technical item names lain dipertahankan |
+| Ontology | `ont_zava_upstream` | Konsep, hubungan, dan binding objek bisnis |
+| Data agent KPI | `da_zava_performance` | Pertanyaan numerik atas semantic model |
+| Data agent aset | `da_zava_asset_context` | Pertanyaan hubungan atas ontology dan sumber terkurasi |
 
 Dua workspace dipilih untuk membedakan akses engineer/BI dari serving AI. Tidak diperlukan tiga Lakehouse terpisah hanya untuk memberi nama Bronze/Silver/Gold. Gold berbentuk Warehouse sesuai kebutuhan pengguna; pola medallion dapat memakai kombinasi Lakehouse dan Warehouse. [S09]
 
@@ -350,7 +347,7 @@ Hasil acuan:
 | Equipment downtime | 4 x 12 jam | **48 equipment-hours** |
 | Affected-well downtime | 10 x 4 x 12 jam | **480 well-hours** |
 
-Nilai di atas adalah **opportunity estimate sintetis**, bukan pendapatan, laba, cadangan, atau kerugian aktual PIEP. Harga gas tidak dikalikan langsung dengan BOE. Net-WI merupakan penyederhanaan gross x WI, **bukan entitlement kontraktual**.
+Nilai di atas adalah **opportunity estimate sintetis**, bukan pendapatan, laba, cadangan, atau kerugian aktual Zava Energy. Harga gas tidak dikalikan langsung dengan BOE. Net-WI merupakan penyederhanaan gross x WI, **bukan entitlement kontraktual**.
 
 Noise, kejadian lain, dan perubahan WI tidak diterapkan pada fixture ini. Kasus lain ditempatkan di luar well/periode fixture agar jawaban acuan tetap stabil.
 
@@ -390,7 +387,7 @@ Gunakan satu Azure SQL database untuk mengendalikan biaya dan setup, dengan bebe
 | `ref` | Target, cost, FX, price, UOM, canonical crosswalk, WI history, dan source authority policy |
 | `ctl` | Source batch manifest, sequence bounds, audit seed, dan approval/decision register demo |
 
-Semua merupakan schema demo, **bukan struktur aplikasi PIEP yang telah ditemukan**. Satu database fisik menyimulasikan beberapa system of record; hal ini tidak berarti PIEP nyata memakai satu database. Sumber sengaja tidak seragam: konformansi ke model kanonis PPDM-aligned dan pemilihan sumber berwenang menjadi pembelajaran Silver.
+Semua merupakan schema demo, **bukan struktur aplikasi Zava Energy yang telah ditemukan**. Satu database fisik menyimulasikan beberapa system of record; hal ini tidak berarti Zava Energy nyata memakai satu database. Sumber sengaja tidak seragam: konformansi ke model kanonis PPDM-aligned dan pemilihan sumber berwenang menjadi pembelajaran Silver.
 
 ### 6.2 Kontrak perubahan sumber
 
@@ -472,7 +469,7 @@ Identitas perubahan, identitas observation dari issuer, dan canonical business k
 | `bronze` | Event sumber yang belum dibersihkan secara bisnis |
 | `stg_df` | Output staging Dataflow Gen2; bukan tabel kanonis yang dipublikasikan |
 | `silver` | Model kanonis PPDM-aligned: master, relasi, observation terkonformansi, dan golden records |
-| `silver_ext` | Kontrak bisnis PIEP-demo: target, biaya, authority, approval, dan metadata khusus yang tidak diklaim sebagai PPDM resmi |
+| `silver_ext` | Kontrak bisnis demo Zava Energy: target, biaya, authority, approval, dan metadata khusus yang tidak diklaim sebagai PPDM resmi |
 | `quarantine` | Record tidak valid, rule ID, alasan, batch, dan status penyelesaian |
 | `serve` | Proyeksi bertipe dan ber-grain jelas untuk loading Warehouse |
 | `ops` | Manifest, candidate/decision logs, hasil kualitas, statistik proses, dan lineage |
@@ -537,8 +534,8 @@ Master berubah melalui proses usulan -> validasi -> review/approval -> publikasi
 
 | Dataflow | Input | Transformasi | Output |
 |---|---|---|---|
-| `df_piep_target_etl` | Snapshot Azure SQL target wide yang sudah diarsipkan ke Bronze | Explicit types, locale-aware parsing, unpivot bulan, mapping field/UOM, validasi versi | `stg_df.target_monthly` |
-| `df_piep_cost_etl` | Snapshot Azure SQL cost dan FX yang sama batch-nya | Cleansing kode, join FX, perhitungan USD, validasi kurs dan periode | `stg_df.cost_monthly` |
+| `df_zava_target_etl` | Snapshot Azure SQL target wide yang sudah diarsipkan ke Bronze | Explicit types, locale-aware parsing, unpivot bulan, mapping field/UOM, validasi versi | `stg_df.target_monthly` |
+| `df_zava_cost_etl` | Snapshot Azure SQL cost dan FX yang sama batch-nya | Cleansing kode, join FX, perhitungan USD, validasi kurs dan periode | `stg_df.cost_monthly` |
 
 Kedua dataflow:
 
@@ -587,7 +584,7 @@ Schema usulan:
 - `gold`: dimensi/fakta fisik dari data product approved untuk konsumsi.
 - `ops`: audit, source decisions, approval evidence, publication manifest, dan hasil rekonsiliasi.
 
-Baseline loading memakai T-SQL `INSERT ... SELECT` dari `lh_piep_core.serve` melalui SQL analytics endpoint, pada workspace inti yang sama. Gunakan kolom eksplisit dan casting. CTAS dapat dipakai untuk tabel staging baru; bukan pola drop/recreate rutin semua tabel Gold. [S13]
+Baseline loading memakai T-SQL `INSERT ... SELECT` dari `lh_zava_core.serve` melalui SQL analytics endpoint, pada workspace inti yang sama. Gunakan kolom eksplisit dan casting. CTAS dapat dipakai untuk tabel staging baru; bukan pola drop/recreate rutin semua tabel Gold. [S13]
 
 Sebelum query lintas item, verifikasi bahwa metadata dan data batch Lakehouse sudah terlihat di SQL endpoint. Jangan mengganti pemeriksaan dengan sleep yang diasumsikan selalu cukup.
 
@@ -652,10 +649,10 @@ Default semua kanal adalah **latest approved publication**, bukan latest ingeste
 
 | Pipeline usulan | Fungsi |
 |---|---|
-| `pl_piep_e2e` | Orchestrator utama |
-| `pl_piep_ingest_entity` | Copy satu entity dan verifikasi batas batch |
-| `pl_piep_publish_gold` | Stage, validate, publish Warehouse |
-| `pl_piep_publish_ai` | Load AI projection, validate, dan refresh context yang didukung |
+| `pl_zava_e2e` | Orchestrator utama |
+| `pl_zava_ingest_entity` | Copy satu entity dan verifikasi batas batch |
+| `pl_zava_publish_gold` | Stage, validate, publish Warehouse |
+| `pl_zava_publish_ai` | Load AI projection, validate, dan refresh context yang didukung |
 
 Alur dependensi:
 
@@ -666,8 +663,8 @@ Preflight + acquire run lock
     -> nb_01_land_bronze + ingestion audit/watermark commit
     -> parallel branches:
            A. nb_02_conform_master_ppdm -> nb_03_conform_production
-           B. df_piep_target_etl
-           C. df_piep_cost_etl
+           B. df_zava_target_etl
+           C. df_zava_cost_etl
     -> nb_04_conform_business, setelah A/B/C sukses
     -> nb_05_validate_and_serve
     -> Quality + source-authority + reconciliation gates:
@@ -675,9 +672,9 @@ Preflight + acquire run lock
            PASS: await/check required business approval
     -> Approval gate:
            PENDING/REJECTED: keep previous approved publication; record reason
-           APPROVED: pl_piep_publish_gold + BusinessPublication manifest
+           APPROVED: pl_zava_publish_gold + BusinessPublication manifest
     -> Refresh/validate semantic model -> BI_READY
-    -> pl_piep_publish_ai -> ontology/context refresh + smoke queries -> AI_READY
+    -> pl_zava_publish_ai -> ontology/context refresh + smoke queries -> AI_READY
     -> Final reconciliation/status + release lock
 ```
 
@@ -713,7 +710,7 @@ Semantic model menggunakan refresh activity yang sesuai atau endpoint refresh re
 
 ### 12.1 Prinsip model
 
-- Buat `sm_piep_performance` secara eksplisit; jangan mengandalkan semantic model otomatis.
+- Buat `sm_zava_performance` secara eksplisit; jangan mengandalkan semantic model otomatis.
 - Gunakan star schema, relasi satu-ke-banyak dan arah filter tunggal; dokumentasikan pengecualian bila diperlukan.
 - **Direct Lake** di atas tabel fisik Gold diprioritaskan. Pilih varian koneksi dan identitas yang didukung; uji RLS dan kemungkinan fallback, bukan menganggap semua query pasti Direct Lake. [S15]
 - Kalender dan atribut turunan materialisasikan di Gold agar tidak bergantung pada fitur calculated table yang belum dipilih.
@@ -763,7 +760,7 @@ Untuk setiap ukuran, register KPI juga memuat owner, input data product, grain, 
 
 | Halaman | Peran | Visual utama dan pertanyaan |
 |---|---|---|
-| P1 - PIEP SSOT Portfolio | Executive | KPI approved + actual vs target trend, ranking deviasi, identitas publikasi dan status consumer |
+| P1 - Zava Energy SSOT Portfolio | Executive | KPI approved + actual vs target trend, ranking deviasi, identitas publikasi dan status consumer |
 | P2 - Production & Loss Investigation | Analytical | Tren harian, waterfall/variance by asset, downtime timeline, daftar event dan loss allocation |
 | P3 - Cost & Working Interest | Comparative | Biaya/BOE per aset, gross vs net-WI, tren bulanan, indicative value opportunity |
 | P4 - SSOT Trust & Reconciliation | Operational | Source candidates vs selected, decision reason, approval, completeness, latest attempt vs approved, serta kesesuaian kanal |
@@ -822,7 +819,7 @@ Untuk tren, tambah time-series binding pada ReportingStream dari `ai.reporting_s
 
 - Master proyeksi berasal dari snapshot Silver approved yang direferensikan oleh publikasi Gold, bukan versi candidate atau master yang lebih baru.
 - Nilai numerik konsumsi berasal dari **Gold published**, bukan perhitungan alternatif di prompt.
-- Pipeline menyalin subset yang disetujui ke `lh_piep_ai`; seluruh tabel memuat `business_publication_id`, `kpi_contract_version` bila relevan, dan `as_of_utc`.
+- Pipeline menyalin subset yang disetujui ke `lh_zava_ai`; seluruh tabel memuat `business_publication_id`, `kpi_contract_version` bila relevan, dan `as_of_utc`.
 - Tabel AI dikelola sebagai output serving: tidak diedit manual dan tidak menjadi sumber balik ke Gold.
 - Incident fixture menyimpan durasi equipment 48 jam; loss allocation menyimpan total 4.000 BOE. Kedua jenis ukuran tidak dicampur.
 - Aturan key/relationship dan jumlah entity diuji sebelum binding.
@@ -849,8 +846,8 @@ Tenant setting ontology harus diaktifkan oleh admin. [S20]
 
 | Agent | Sumber baseline | Pertanyaan utama | Alasan pemisahan |
 |---|---|---|---|
-| `da_piep_performance` | `sm_piep_performance` saja | KPI, target, gross/net-WI, biaya, loss | Memakai explicit measures yang sama dengan Power BI |
-| `da_piep_asset_context` | Ontology context + underlying managed AI tables yang diperlukan | Golden identity dan hubungan well/equipment/incident | Memakai konsep PPDM-aligned dan publikasi master yang sama, tanpa membuka seluruh Bronze |
+| `da_zava_performance` | `sm_zava_performance` saja | KPI, target, gross/net-WI, biaya, loss | Memakai explicit measures yang sama dengan Power BI |
+| `da_zava_asset_context` | Ontology context + underlying managed AI tables yang diperlukan | Golden identity dan hubungan well/equipment/incident | Memakai konsep PPDM-aligned dan publikasi master yang sama, tanpa membuka seluruh Bronze |
 
 Pemisahan mengurangi ambiguitas pemilihan sumber dan perhitungan ulang KPI. Menggabungkan keduanya ke satu agent menjadi eksperimen lanjutan setelah evaluasi routing, bukan baseline.
 
@@ -874,7 +871,7 @@ Jika tenant masih menampilkan pengalaman preview yang berbeda, dokumentasikan ve
 
 Instruksi berikut adalah rancangan untuk ditulis dalam bahasa Inggris:
 
-- Semua data adalah synthetic demo, bukan performance aktual PIEP.
+- Semua data adalah synthetic demo, bukan performance aktual Zava Energy.
 - Selalu sebut periode, basis gross/net-WI, satuan, dan publication/as-of ketika menjawab KPI.
 - Gunakan latest approved publication; jelaskan bila sumber/context agent masih pada publikasi sebelumnya. Jangan memilih provisional hanya karena timestamp-nya lebih baru.
 - Gunakan measure bisnis yang tersedia; jangan menafsirkan net-WI sebagai entitlement.
@@ -935,7 +932,7 @@ Country viewer tidak diberi akses ontology sumber all-country hanya karena RLS r
 ### 16.2 Kontrol tambahan
 
 - Label **SYNTHETIC / DEMO** pada item, report, agent instructions, dan dokumentasi.
-- Tidak ada kredensial, data pribadi nyata, atau dokumen internal PIEP.
+- Tidak ada kredensial, data pribadi nyata, atau dokumen internal Zava Energy.
 - Izin sumber dan tujuan diuji sebagai identitas non-admin.
 - Identitas pipeline, owner dataflow, dan service identity dicatat; audit tidak bergantung pada akun pembuat tunggal tanpa prosedur.
 - Mapping PPDM dan reference lists memiliki owner, version, serta bukti perubahan.
@@ -1047,7 +1044,7 @@ Total indikatif **15-21 person-days**, di luar waktu menunggu lisensi platform, 
 
 | Menit | Demonstrasi |
 |---|---|
-| 0-3 | Masalah PIEP SSOT: dua sumber berbeda, batas data sintetis, dan satu angka korporat |
+| 0-3 | Masalah Zava Energy SSOT: dua sumber berbeda, batas data sintetis, dan satu angka korporat |
 | 3-8 | S1: bandingkan provisional/final, golden identity, authority policy, dan nilai terpilih |
 | 8-12 | PPDM-aligned passport: 120 well vs 150 wellbore vs 180 completion |
 | 12-17 | S2: koreksi -> quality/authority checks -> approval -> Gold publication |
@@ -1105,13 +1102,13 @@ Struktur direktori calon implementasi: `infra`, `generator`, `contracts`, `fabri
 - Simpan evidence yang perlu dipertahankan sebelum teardown.
 - Hapus atau pause resource berbayar sesuai persetujuan; periksa biaya storage/network yang tersisa.
 - Cabut akses/credential demo yang tidak lagi diperlukan.
-- Tidak menghapus resource PIEP atau lingkungan bersama di luar scope demo.
+- Tidak menghapus resource Zava Energy atau lingkungan bersama di luar scope demo.
 
 ### 20.5 Pengembangan setelah baseline
 
 | Tambahan | Kapan relevan |
 |---|---|
-| Implementasi subset model PPDM resmi | Jika PIEP meminta pemetaan fisik model resmi dan hak penggunaan tersedia; bukan prasyarat SSOT-aligned baseline |
+| Implementasi subset model PPDM resmi | Jika Zava Energy meminta pemetaan fisik model resmi dan hak penggunaan tersedia; bukan prasyarat SSOT-aligned baseline |
 | Change Tracking/CDC sumber nyata | Jika perubahan tidak dapat disajikan sebagai sealed append-only demo journal |
 | Real-Time Intelligence | Jika tersedia telemetry nyata/sintetis berfrekuensi tinggi dan ada kebutuhan latensi yang terukur |
 | Materialized Lake Views | Eksperimen transformasi deklaratif pada schema-enabled Lakehouse, setelah baseline notebook stabil |
@@ -1121,7 +1118,7 @@ Struktur direktori calon implementasi: `infra`, `generator`, `contracts`, `fabri
 | HSSE/reserves | Setelah definisi, denominator, klasifikasi, serta batas pelaporan disepakati |
 | CI/CD multi-environment | Setelah dukungan item dan proses rebind diuji |
 
-**Rekomendasi pelaksanaan:** mulai dari kontrak SSOT PIEP: domain owner, authoritative sources, canonical identity, PPDM alignment, KPI, dan approval. Buktikan konflik S1 serta koreksi S2 terselesaikan secara terkelola; bangun ingestion-to-BI yang dapat direkonsiliasi; kemudian ontology dan agents mengonsumsi publikasi yang sama. Keberhasilan bukan jumlah item Fabric atau tabel PPDM, melainkan satu rujukan bisnis yang dipercaya dan dapat dijelaskan.
+**Rekomendasi pelaksanaan:** mulai dari kontrak SSOT Zava Energy: domain owner, authoritative sources, canonical identity, PPDM alignment, KPI, dan approval. Buktikan konflik S1 serta koreksi S2 terselesaikan secara terkelola; bangun ingestion-to-BI yang dapat direkonsiliasi; kemudian ontology dan agents mengonsumsi publikasi yang sama. Keberhasilan bukan jumlah item Fabric atau tabel PPDM, melainkan satu rujukan bisnis yang dipercaya dan dapat dijelaskan.
 
 ## 21. Referensi resmi
 
@@ -1129,7 +1126,6 @@ Diakses pada **5 Oktober 2026**. Dokumentasi produk dapat berubah; feature gate 
 
 | Rujukan | Penerbit/judul | Pemakaian |
 |---|---|---|
-| [S01] | PIEP - About Us | Konteks bisnis hulu internasional |
 | [S02] | PPDM - PPDM 3.9 Data Model | Model relasional, MDM, cakupan, dan batas versi |
 | [S03] | PPDM - What Is a Well? / Components | Perbedaan well dan komponennya |
 | [S04] | PPDM - Data Model Documentation | Hak akses untuk jalur model resmi opsional, bukan blocker alignment baseline |
@@ -1156,7 +1152,6 @@ Diakses pada **5 Oktober 2026**. Dokumentasi produk dapat berubah; feature gate 
 | [S25] | Microsoft Learn - What is OneLake? | Data bersama, distributed ownership, catalog, dan konsumsi lintas engine |
 | [S26] | Microsoft Learn - Fabric domains | Pengorganisasian domain dan governance; domain assignment bukan kontrol akses |
 
-[S01]: https://piep.pertamina.com/en/about-us
 [S02]: https://ppdm.org/ppdm/PPDM/IEDS/PPDM_Data_Model/PPDM/PPDM_3.9_Data_Model.aspx
 [S03]: https://whatisawell.ppdm.org/components
 [S04]: https://docs.ppdm.org/

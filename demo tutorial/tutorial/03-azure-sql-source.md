@@ -1,6 +1,6 @@
 # Lab 03 - Azure SQL Database sebagai sistem sumber
 
-Dalam skenario nyata, data PIEP berasal dari sistem pelaporan operator di tiap negara. Workshop ini menyimulasikannya dengan satu **Azure SQL Database** berisi schema per sumber (`src_dz`, `src_my`, `src_iq`), data referensi (`ref`), dan kontrol batch (`ctl`). Database hanya memakai autentikasi **Microsoft Entra ID**, tanpa SQL login atau password.
+Dalam skenario nyata, data Zava Energy berasal dari sistem pelaporan operator di tiap negara. Workshop ini menyimulasikannya dengan satu **Azure SQL Database** berisi schema per sumber (`src_dz`, `src_my`, `src_iq`), data referensi (`ref`), dan kontrol batch (`ctl`). Database hanya memakai autentikasi **Microsoft Entra ID**, tanpa SQL login atau password.
 
 Dalam lab ini Anda akan:
 
@@ -12,13 +12,13 @@ Dalam lab ini Anda akan:
 ## Prasyarat
 
 - [Lab 02](02-synthetic-data-generator.md) selesai: folder `data/source` sudah ada.
-- Peran **Contributor** pada resource group `rg-piep-ppdm-demo`.
+- Peran **Contributor** pada resource group `rg-zava-ppdm-demo`.
 
 ## Arsitektur sumber
 
 ```mermaid
 flowchart LR
-    subgraph db["sqldb_piep_source_demo"]
+    subgraph db["sqldb_zava_source_demo"]
         ctl["ctl<br/>source_batch · batch_entity · entity_config"]
         ref["ref<br/>17 tabel snapshot master & referensi"]
         dz["src_dz<br/>production_report"]
@@ -45,7 +45,7 @@ flowchart LR
 2. Buat resource group. Lewati langkah ini jika fasilitator sudah membuatnya.
 
    ```powershell
-   az group create --name rg-piep-ppdm-demo --location <REGION_KAPASITAS_FABRIC> --tags workload=piep-ssot-workshop dataClassification=synthetic
+   az group create --name rg-zava-ppdm-demo --location <REGION_KAPASITAS_FABRIC> --tags workload=zava-ssot-workshop dataClassification=synthetic
    ```
 
 3. Ambil identitas Anda dan IP publik laptop:
@@ -60,13 +60,13 @@ flowchart LR
 
    ```powershell
    az deployment group create `
-     --resource-group rg-piep-ppdm-demo `
+     --resource-group rg-zava-ppdm-demo `
      --template-file infra/azure-sql/main.bicep `
-     --parameters serverName=sql-piep-ssot-<inisial> entraAdminLogin=$upn entraAdminObjectId=$oid clientIpAddress=$ip allowAzureServices=true `
+     --parameters serverName=sql-zava-ssot-<inisial> entraAdminLogin=$upn entraAdminObjectId=$oid clientIpAddress=$ip allowAzureServices=true `
      --query properties.outputs
    ```
 
-   Output menampilkan `serverFqdn`, misalnya `sql-piep-ssot-abc.database.windows.net`.
+   Output menampilkan `serverFqdn`, misalnya `sql-zava-ssot-abc.database.windows.net`.
 
 > [!IMPORTANT]
 > `allowAzureServices=true` membuka firewall untuk **semua** layanan Azure, termasuk tenant lain. Pengaturan ini dipakai agar koneksi cloud Fabric dapat menjangkau database **sintetis** ini dengan sederhana. Untuk data nyata, gunakan [VNet data gateway](https://learn.microsoft.com/data-integration/vnet/overview) atau private endpoint dan biarkan nilainya `false`.
@@ -89,40 +89,40 @@ Gunakan opsi ini bila endpoint publik Azure SQL dilarang. Fabric menjangkau data
 
 ```mermaid
 flowchart LR
-    L["Laptop<br/>python -m workshop generate"] -->|upload CSV| F["lh_piep_core<br/>Files/source_packs/&lt;batch&gt;"]
-    F --> PL["pl_piep_load_source"]
+    L["Laptop<br/>python -m workshop generate"] -->|upload CSV| F["lh_zava_core<br/>Files/source_packs/&lt;batch&gt;"]
+    F --> PL["pl_zava_load_source"]
     PL --> GW["VNet data gateway<br/>snet-fabric-gateway"]
     GW --> PE["Private endpoint"] --> SQL[("Azure SQL<br/>public access Disabled")]
-    P2["pl_piep_e2e · Dataflow Gen2"] --> GW
+    P2["pl_zava_e2e · Dataflow Gen2"] --> GW
 ```
 
 1. Deploy database tanpa endpoint publik, lalu deploy VNet, private endpoint, dan private DNS:
 
    ```powershell
-   az deployment group create -g rg-piep-ppdm-demo --template-file infra/azure-sql/main.bicep `
-     --parameters serverName=sql-piep-ssot-<inisial> entraAdminLogin=$upn entraAdminObjectId=$oid publicNetworkAccess=Disabled
-   az deployment group create -g rg-piep-ppdm-demo --template-file infra/azure-sql/private-network.bicep `
-     --parameters serverName=sql-piep-ssot-<inisial>
+   az deployment group create -g rg-zava-ppdm-demo --template-file infra/azure-sql/main.bicep `
+     --parameters serverName=sql-zava-ssot-<inisial> entraAdminLogin=$upn entraAdminObjectId=$oid publicNetworkAccess=Disabled
+   az deployment group create -g rg-zava-ppdm-demo --template-file infra/azure-sql/private-network.bicep `
+     --parameters serverName=sql-zava-ssot-<inisial>
    ```
 
-   [`private-network.bicep`](../infra/azure-sql/private-network.bicep) membuat `vnet-piep-ssot` dengan subnet `snet-private-endpoints` dan subnet `snet-fabric-gateway`. Subnet gateway didelegasikan ke `Microsoft.PowerPlatform/vnetaccesslinks`. Pastikan resource provider `Microsoft.PowerPlatform` sudah terdaftar di subscription.
-2. Di Fabric, buka **Settings** > **Manage connections and gateways** > **Virtual network data gateways** > **New**. Pilih kapasitas F workshop, subscription, `rg-piep-ppdm-demo`, `vnet-piep-ssot`, dan `snet-fabric-gateway`, lalu beri nama `vnetgw-piep-ssot`.
+   [`private-network.bicep`](../infra/azure-sql/private-network.bicep) membuat `vnet-zava-ssot` dengan subnet `snet-private-endpoints` dan subnet `snet-fabric-gateway`. Subnet gateway didelegasikan ke `Microsoft.PowerPlatform/vnetaccesslinks`. Pastikan resource provider `Microsoft.PowerPlatform` sudah terdaftar di subscription.
+2. Di Fabric, buka **Settings** > **Manage connections and gateways** > **Virtual network data gateways** > **New**. Pilih kapasitas F workshop, subscription, `rg-zava-ppdm-demo`, `vnet-zava-ssot`, dan `snet-fabric-gateway`, lalu beri nama `vnetgw-zava-ssot`.
 
    > [!NOTE]
    > VNet data gateway membutuhkan kapasitas Fabric berbayar (F SKU) dan berjalan di kapasitas tersebut. Region VNet dan kapasitas sebaiknya sama.
-3. Pada **Connections** > **New**, pilih **Virtual network**, gateway `vnetgw-piep-ssot`, tipe **SQL Server**, server `sql-piep-ssot-<inisial>.database.windows.net`, dan database `sqldb_piep_source_demo`. Pilih autentikasi **OAuth 2.0** (akun organisasi), lalu beri nama **`conn_sql_piep_source`**.
-4. Selesaikan langkah 1–2 di [Lab 04](04-copy-ingestion-bronze.md) untuk membuat `lh_piep_core`. Lalu unggah folder `data/source` ke `lh_piep_core` > **Files** > `source_packs`. Gunakan **Upload** > **Upload folder** atau OneLake file explorer. Hasilnya `Files/source_packs/B0/*.csv`, `Files/source_packs/B1/*.csv`, dan seterusnya.
+3. Pada **Connections** > **New**, pilih **Virtual network**, gateway `vnetgw-zava-ssot`, tipe **SQL Server**, server `sql-zava-ssot-<inisial>.database.windows.net`, dan database `sqldb_zava_source_demo`. Pilih autentikasi **OAuth 2.0** (akun organisasi), lalu beri nama **`conn_sql_zava_source`**.
+4. Selesaikan langkah 1–2 di [Lab 04](04-copy-ingestion-bronze.md) untuk membuat `lh_zava_core`. Lalu unggah folder `data/source` ke `lh_zava_core` > **Files** > `source_packs`. Gunakan **Upload** > **Upload folder** atau OneLake file explorer. Hasilnya `Files/source_packs/B0/*.csv`, `Files/source_packs/B1/*.csv`, dan seterusnya.
 5. Isi bagian `fabric` di `config/local.json`, lalu buat pipeline pembuat skema dan pemuat data:
 
    ```powershell
    az login
-   python -m workshop deploy-pipelines --config config/local.json --pipeline pl_piep_setup_source --pipeline pl_piep_load_source
+   python -m workshop deploy-pipelines --config config/local.json --pipeline pl_zava_setup_source --pipeline pl_zava_load_source
    ```
 
-6. Jalankan **`pl_piep_setup_source`** sekali. Pipeline ini menjalankan `01`, `02`, dan `03` SQL melalui gateway. Lalu jalankan **`pl_piep_load_source`** dengan `p_batch_id = B0`. Pipeline memeriksa urutan batch, menghapus sisa batch yang belum tersegel, menyalin 24 entitas, lalu menyalin `ctl.source_batch` paling akhir sebagai segel batch.
-7. Untuk verifikasi, buka output aktivitas `sql_validate_source` pada run `pl_piep_setup_source` berikutnya, atau `sql_seal_and_report` pada run loader.
+6. Jalankan **`pl_zava_setup_source`** sekali. Pipeline ini menjalankan `01`, `02`, dan `03` SQL melalui gateway. Lalu jalankan **`pl_zava_load_source`** dengan `p_batch_id = B0`. Pipeline memeriksa urutan batch, menghapus sisa batch yang belum tersegel, menyalin 24 entitas, lalu menyalin `ctl.source_batch` paling akhir sebagai segel batch.
+7. Untuk verifikasi, buka output aktivitas `sql_validate_source` pada run `pl_zava_setup_source` berikutnya, atau `sql_seal_and_report` pada run loader.
 
-Pada opsi B, ganti setiap perintah `python -m workshop load --batch X` di lab berikutnya dengan menjalankan `pl_piep_load_source` dengan `p_batch_id = X`.
+Pada opsi B, ganti setiap perintah `python -m workshop load --batch X` di lab berikutnya dengan menjalankan `pl_zava_load_source` dengan `p_batch_id = X`.
 
 ## 2. Isi konfigurasi lokal
 
@@ -132,8 +132,8 @@ Edit `config/local.json`:
 
 ```json
 "azure_sql": {
-  "server": "sql-piep-ssot-<inisial>.database.windows.net",
-  "database": "sqldb_piep_source_demo",
+  "server": "sql-zava-ssot-<inisial>.database.windows.net",
+  "database": "sqldb_zava_source_demo",
   "username": "<UPN Anda>",
   "driver": "ODBC Driver 18 for SQL Server",
   "authentication": "ActiveDirectoryInteractive"
@@ -161,7 +161,7 @@ Jika koneksi Fabric memakai identitas selain admin, misalnya service principal u
 python -m workshop run-sql --config config/local.json --file assets/sql/azure-sql/02_security_roles.sql
 ```
 
-Role `piep_source_reader` hanya mendapat `SELECT`. Role `piep_source_loader` mendapat DML tanpa hak DDL.
+Role `zava_source_reader` hanya mendapat `SELECT`. Role `zava_source_loader` mendapat DML tanpa hak DDL.
 
 ## 4. Muat dan segel batch B0
 
@@ -200,12 +200,12 @@ Untuk pemeriksaan visual, buka **Query editor** database di Azure portal, login 
 | Gejala | Solusi |
 |---|---|
 | `Login failed` / `AADSTS` | Pastikan `username` sama dengan UPN admin Entra server dan akun memiliki akses tenant |
-| `Cannot open server ... client IP` | IP berubah. Tambahkan IP: `az sql server firewall-rule create -g rg-piep-ppdm-demo -s <server> -n laptop --start-ip-address $ip --end-ip-address $ip` |
+| `Cannot open server ... client IP` | IP berubah. Tambahkan IP: `az sql server firewall-rule create -g rg-zava-ppdm-demo -s <server> -n laptop --start-ip-address $ip --end-ip-address $ip` |
 | `Connected to 'master', expected ...` | Nama database di `config/local.json` salah. Loader berhenti tanpa mengubah apa pun. |
 | `Load B0 before B1` | Batch harus dimuat berurutan. Gunakan `--through <batch>` untuk memuat beberapa batch sekaligus. |
 | Database lambat saat query pertama | Database serverless sedang *resume* dari auto-pause. Tunggu sekitar satu menit. |
 | `DenyPublicEndpointEnabled` saat deploy, atau `Deny Public Network Access is set to Yes` di Fabric | Kebijakan organisasi menonaktifkan endpoint publik. Gunakan [opsi B](#opsi-b---jaringan-privat-tanpa-endpoint-publik). |
-| Dataflow atau Copy gagal menjangkau SQL privat | Koneksi tidak memakai VNet data gateway, atau kapasitas gateway sedang di-*pause*. Pakai koneksi pada gateway `vnetgw-piep-ssot` dan pastikan kapasitas F aktif. |
+| Dataflow atau Copy gagal menjangkau SQL privat | Koneksi tidak memakai VNet data gateway, atau kapasitas gateway sedang di-*pause*. Pakai koneksi pada gateway `vnetgw-zava-ssot` dan pastikan kapasitas F aktif. |
 | Popup login tidak muncul | Isi `"authentication": "AzureCli"` lalu jalankan `az login`. |
 
 ## Langkah berikutnya

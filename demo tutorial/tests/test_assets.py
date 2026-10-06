@@ -188,7 +188,7 @@ def test_ontology_matches_ai_projection():
 
 
 def test_agent_example_queries_use_ai_tables():
-    sql = read(ASSETS / "agents" / "da_piep_asset_context_example_queries.sql")
+    sql = read(ASSETS / "agents" / "da_zava_asset_context_example_queries.sql")
     used = set(re.findall(r"FROM (ai\.[a-z_]+)", sql))
     assert used and used <= _nb06_tables()
     cases = list(csv.DictReader((ASSETS / "agents" / "agent_evaluation_cases.csv").open(encoding="utf-8")))
@@ -202,15 +202,15 @@ def test_pipeline_sheet_references_existing_assets():
         assert procedure in procedures, procedure
     for notebook in set(re.findall(r"`(nb_0\d_\w+)`", sheet)):
         assert (NOTEBOOK_SRC / f"{notebook}.py").exists(), notebook
-    for dataflow in set(re.findall(r"`(df_piep_\w+)`", sheet)):
+    for dataflow in set(re.findall(r"`(df_zava_\w+)`", sheet)):
         assert (ASSETS / "fabric" / "dataflows" / f"{dataflow}.pq").exists(), dataflow
     for parameter in ["p_batch_id", "p_run_id", "p_fail_after_bronze"]:
         assert parameter in read(NOTEBOOK_SRC / "nb_02_conform_master_ppdm.py")
 
 
 def test_dataflow_outputs_match_notebook_inputs():
-    target = read(ASSETS / "fabric" / "dataflows" / "df_piep_target_etl.pq")
-    cost = read(ASSETS / "fabric" / "dataflows" / "df_piep_cost_etl.pq")
+    target = read(ASSETS / "fabric" / "dataflows" / "df_zava_target_etl.pq")
+    cost = read(ASSETS / "fabric" / "dataflows" / "df_zava_cost_etl.pq")
     harness = read(ROOT / "tests" / "notebook_harness.py")
     for column in ["batch_id", "field_id", "commodity", "scenario_id", "month_start", "target_value", "target_uom",
                    "dq_status"]:
@@ -273,7 +273,7 @@ def test_tutorial_numbers_match_answer_key(standard_expected):
 
 
 def test_json_assets_are_valid():
-    for path in [ASSETS / "powerbi" / "piep-ssot-theme.json", ROOT / "config" / "workshop.example.json",
+    for path in [ASSETS / "powerbi" / "zava-ssot-theme.json", ROOT / "config" / "workshop.example.json",
                  ROOT / "infra" / "azure-sql" / "main.parameters.example.json"]:
         json.loads(read(path))
 
@@ -302,10 +302,10 @@ def test_pipeline_definitions_match_activity_sheet_and_committed_json():
                                  "notebook:nb_01_land_bronze", "notebook:nb_02_conform_master_ppdm",
                                  "notebook:nb_03_conform_production", "notebook:nb_04_conform_business",
                                  "notebook:nb_05_validate_and_serve", "notebook:nb_06_prepare_ai_serving",
-                                 "dataflow:df_piep_target_etl", "dataflow:df_piep_cost_etl"]}
-    ids.update(sql_database="sqldb_piep_source_demo", core_workspace_name="ws-piep-ppdm-demo")
+                                 "dataflow:df_zava_target_etl", "dataflow:df_zava_cost_etl"]}
+    ids.update(sql_database="sqldb_zava_source_demo", core_workspace_name="ws-zava-ppdm-demo")
     assert committed == json.loads(json.dumps(render(ids))), "run `python -m workshop render-pipelines`"
-    names = [a["name"] for a in committed["pl_piep_e2e"]["properties"]["activities"]]
+    names = [a["name"] for a in committed["pl_zava_e2e"]["properties"]["activities"]]
     for name in names:
         assert f"`{name}`" in sheet, name
 

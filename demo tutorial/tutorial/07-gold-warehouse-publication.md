@@ -1,6 +1,6 @@
 # Lab 07 - Gold Warehouse dan siklus publikasi SSOT
 
-Gold adalah **satu-satunya** sumber angka yang boleh dikonsumsi pengguna bisnis. Di workshop ini, Gold berada di **Fabric Warehouse** `wh_piep_gold`. Kandidat dari Lakehouse terlebih dahulu masuk ke schema `stg`, lalu harus **disetujui pemilik data** sebelum dipindahkan ke `gold`, dalam satu transaksi beserta pemeriksaan total kontrol.
+Gold adalah **satu-satunya** sumber angka yang boleh dikonsumsi pengguna bisnis. Di workshop ini, Gold berada di **Fabric Warehouse** `wh_zava_gold`. Kandidat dari Lakehouse terlebih dahulu masuk ke schema `stg`, lalu harus **disetujui pemilik data** sebelum dipindahkan ke `gold`, dalam satu transaksi beserta pemeriksaan total kontrol.
 
 Dalam lab ini Anda akan:
 
@@ -19,8 +19,8 @@ sequenceDiagram
     autonumber
     actor Eng as Data engineer
     participant NB as nb_05_validate_and_serve
-    participant LH as lh_piep_core.serve
-    participant WH as wh_piep_gold
+    participant LH as lh_zava_core.serve
+    participant WH as wh_zava_gold
     actor Own as Production data owner
     Eng->>NB: p_batch_id = B0
     NB->>NB: quality gate (BLOCKER = 0?) + rekonsiliasi
@@ -52,7 +52,7 @@ sequenceDiagram
 
 ## 2. Buat Warehouse dan objek Gold
 
-1. Di workspace `ws-piep-ppdm-demo`, pilih **+ New item** > **Warehouse** dan beri nama **`wh_piep_gold`**.
+1. Di workspace `ws-zava-ppdm-demo`, pilih **+ New item** > **Warehouse** dan beri nama **`wh_zava_gold`**.
 2. Pilih **New SQL query**. Tempel isi [`01_create_objects.sql`](../assets/sql/warehouse/01_create_objects.sql), lalu pilih **Run**. Setiap `GO` dijalankan sebagai batch terpisah.
 3. Ulangi untuk [`02_procedures.sql`](../assets/sql/warehouse/02_procedures.sql).
 4. Buka [`03_seed_contracts.sql`](../assets/sql/warehouse/03_seed_contracts.sql). Ganti **kedua** `<APPROVER_UPN>` dengan UPN Anda, lalu jalankan. Query terakhir harus menampilkan `CurrentUser` yang sama dengan `ApproverUpn`.
@@ -74,7 +74,7 @@ Objek yang dibuat:
 EXEC ops.usp_stage_candidate @PublicationId = 'PUB-B0', @RunId = 'manual-lab07';
 ```
 
-Prosedur membaca `lh_piep_core.serve.*` dengan nama tiga bagian (*cross-database query*). Sebelum menyalin data, prosedur memastikan jumlah baris yang terlihat di SQL analytics endpoint sama dengan manifest `serve.publication_row_count`.
+Prosedur membaca `lh_zava_core.serve.*` dengan nama tiga bagian (*cross-database query*). Sebelum menyalin data, prosedur memastikan jumlah baris yang terlihat di SQL analytics endpoint sama dengan manifest `serve.publication_row_count`.
 
 > [!TIP]
 > Jika muncul error **50011**, metadata SQL analytics endpoint belum tersinkron dengan tabel Delta terbaru. Tunggu 1–2 menit lalu jalankan ulang. Di Lab 08, pipeline menangani kondisi ini dengan *retry*.
@@ -125,7 +125,7 @@ Jalankan [`04_validate_gold.sql`](../assets/sql/warehouse/04_validate_gold.sql).
 | 50022 | Publikasi tidak menunggu approval | Lihat `ops.vw_publication_history`; mungkin sudah `SUPERSEDED` atau `APPROVED` |
 | 50030 | Publish sebelum approve | Jalankan `usp_approve_publication` terlebih dahulu |
 | 50031 | Total kontrol tidak cocok | Gold di-*rollback* otomatis; laporkan ke fasilitator |
-| `Invalid object name 'lh_piep_core.serve...'` | Warehouse dan Lakehouse berada di workspace berbeda | Keduanya harus berada di `ws-piep-ppdm-demo` |
+| `Invalid object name 'lh_zava_core.serve...'` | Warehouse dan Lakehouse berada di workspace berbeda | Keduanya harus berada di `ws-zava-ppdm-demo` |
 
 ## Langkah berikutnya
 

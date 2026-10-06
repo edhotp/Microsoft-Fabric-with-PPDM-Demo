@@ -1,5 +1,5 @@
 /*
-    PIEP SSOT workshop - validasi Gold (Fabric Warehouse wh_piep_gold), read-only.
+    Zava Energy SSOT workshop - validasi Gold (Fabric Warehouse wh_zava_gold), read-only.
     Bandingkan hasil dengan assets/expected/expected-results-standard.json.
 */
 

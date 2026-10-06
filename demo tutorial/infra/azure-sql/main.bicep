@@ -1,4 +1,4 @@
-// PIEP SSOT workshop - Azure SQL Database sumber (data sintetis)
+// Zava Energy SSOT workshop - Azure SQL Database sumber (data sintetis)
 // Microsoft Entra-only authentication, serverless General Purpose, TLS 1.2, tanpa SQL login.
 targetScope = 'resourceGroup'
 
@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param serverName string
 
 @description('Nama database sumber.')
-param databaseName string = 'sqldb_piep_source_demo'
+param databaseName string = 'sqldb_zava_source_demo'
 
 @description('Nama tampilan (UPN atau nama grup) Microsoft Entra admin server.')
 param entraAdminLogin string
@@ -52,7 +52,7 @@ param maxVCores int = 2
 param autoPauseDelayMinutes int = 60
 
 param tags object = {
-  workload: 'piep-ssot-workshop'
+  workload: 'zava-ssot-workshop'
   dataClassification: 'synthetic'
   owner: 'workshop-facilitator'
 }

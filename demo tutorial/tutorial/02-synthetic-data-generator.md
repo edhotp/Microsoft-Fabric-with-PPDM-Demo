@@ -109,4 +109,4 @@ Buka [`assets/expected/expected-results-standard.json`](../assets/expected/expec
 ## Referensi
 
 - [Lakehouse end-to-end scenario tutorial (pola tutorial Microsoft Learn)](https://learn.microsoft.com/fabric/data-engineering/tutorial-lakehouse-introduction)
-- Rencana demo, bagian 5: [Data dummy dan generator](../../DEMO_PLAN_PIEP_PPDM_MICROSOFT_FABRIC_END_TO_END.md#5-data-dummy-dan-generator)
+- Rencana demo, bagian 5: [Data dummy dan generator](../../DEMO_PLAN_ZAVA_ENERGY_PPDM_MICROSOFT_FABRIC_END_TO_END.md#5-data-dummy-dan-generator)

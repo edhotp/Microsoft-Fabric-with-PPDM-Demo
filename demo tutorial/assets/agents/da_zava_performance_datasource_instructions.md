@@ -1,6 +1,6 @@
-# Data source instructions - sm_piep_performance (agent da_piep_performance)
+# Data source instructions - sm_zava_performance (agent da_zava_performance)
 
-Paste the text below the line into **Data source instructions** of the `sm_piep_performance` source in the data agent `da_piep_performance`.
+Paste the text below the line into **Data source instructions** of the `sm_zava_performance` source in the data agent `da_zava_performance`.
 The data agent passes these instructions to the DAX query generator. Agent instructions alone are not enough: in workshop testing, without these instructions the generator tried to filter on `PublicationId` and returned empty results.
 
 ---

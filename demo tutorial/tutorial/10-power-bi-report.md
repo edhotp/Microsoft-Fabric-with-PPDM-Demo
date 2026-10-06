@@ -1,10 +1,10 @@
-# Lab 10 - Report Power BI "PIEP SSOT - Performance & Data Trust"
+# Lab 10 - Report Power BI "Zava Energy SSOT - Performance & Data Trust"
 
 Report yang baik menjawab pertanyaan bisnis dan sekaligus **menunjukkan mengapa angkanya bisa dipercaya**. Setiap halaman di report ini menampilkan *trust banner* berisi ID publikasi, approver, dan waktu publikasi. Satu halaman khusus membuka bukti SSOT: kelengkapan data, keputusan sumber, dan riwayat publikasi.
 
 Dalam lab ini Anda akan:
 
-- [ ] Membuat report dari `sm_piep_performance` dan menerapkan tema workshop.
+- [ ] Membuat report dari `sm_zava_performance` dan menerapkan tema workshop.
 - [ ] Membangun lima halaman dan satu halaman drillthrough sesuai spesifikasi.
 - [ ] Memeriksa aksesibilitas dan konsistensi angka dengan Gold.
 
@@ -13,7 +13,7 @@ Dalam lab ini Anda akan:
 - [Lab 09](09-semantic-model.md) selesai.
 
 > [!TIP]
-> **Jalankan batch express sambil membangun report.** Muat `H1` (`python -m workshop load --config config/local.json --batch H1`), jalankan `pl_piep_e2e` dengan `p_batch_id = H1`, lalu setujui dan jalankan `pl_piep_publish_gold`. Ulangi untuk `X1`. Kedua batch ini harus selesai sebelum drill di Lab 13. Setelah setiap publikasi, report otomatis menampilkan angka terbaru karena pipeline publikasi me-refresh semantic model. Perhatikan bahwa Net WI DZ turun setelah `H1`, tetapi gross tidak berubah.
+> **Jalankan batch express sambil membangun report.** Muat `H1` (`python -m workshop load --config config/local.json --batch H1`), jalankan `pl_zava_e2e` dengan `p_batch_id = H1`, lalu setujui dan jalankan `pl_zava_publish_gold`. Ulangi untuk `X1`. Kedua batch ini harus selesai sebelum drill di Lab 13. Setelah setiap publikasi, report otomatis menampilkan angka terbaru karena pipeline publikasi me-refresh semantic model. Perhatikan bahwa Net WI DZ turun setelah `H1`, tetapi gross tidak berubah.
 
 ## Struktur report
 
@@ -30,12 +30,12 @@ flowchart LR
 
 ## 1. Buat report dan terapkan tema
 
-1. Buka `sm_piep_performance`, lalu pilih **Explore this data** > **Create a blank report**, atau **+ New report** dari halaman model.
-2. Pilih **View** > **Themes** > **Browse for themes**, lalu pilih [`assets/powerbi/piep-ssot-theme.json`](../assets/powerbi/piep-ssot-theme.json).
-3. Pilih **File** > **Save** dan beri nama **`PIEP SSOT - Performance & Data Trust`**.
+1. Buka `sm_zava_performance`, lalu pilih **Explore this data** > **Create a blank report**, atau **+ New report** dari halaman model.
+2. Pilih **View** > **Themes** > **Browse for themes**, lalu pilih [`assets/powerbi/zava-ssot-theme.json`](../assets/powerbi/zava-ssot-theme.json).
+3. Pilih **File** > **Save** dan beri nama **`Zava Energy SSOT - Performance & Data Trust`**.
 
 > [!NOTE]
-> Tema ini adalah palet workshop, **bukan** brand resmi Pertamina. Jika opsi impor tema tidak tersedia di service, buka report di Power BI Desktop dengan koneksi live ke semantic model dan terapkan tema di sana.
+> Tema ini adalah palet workshop, **bukan** brand resmi perusahaan mana pun. Jika opsi impor tema tidak tersedia di service, buka report di Power BI Desktop dengan koneksi live ke semantic model dan terapkan tema di sana.
 
 ## 2. Header dengan trust banner
 
@@ -47,7 +47,7 @@ Untuk halaman pertama:
 
 ## 3. Bangun halaman
 
-Ikuti [spesifikasi report](../assets/powerbi/semantic-model-and-report-spec.md#laporan-piep-ssot---performance--data-trust) untuk setiap halaman. Ringkasan visual utama:
+Ikuti [spesifikasi report](../assets/powerbi/semantic-model-and-report-spec.md#laporan-zava-energy-ssot---performance--data-trust) untuk setiap halaman. Ringkasan visual utama:
 
 | Halaman | Visual | Field |
 |---|---|---|

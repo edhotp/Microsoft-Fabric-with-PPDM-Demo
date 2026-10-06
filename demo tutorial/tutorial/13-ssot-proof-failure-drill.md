@@ -38,9 +38,9 @@ flowchart LR
    python -m workshop load --config config/local.json --batch Q1
    ```
 
-   Jalankan `pl_piep_e2e` dengan `p_batch_id = Q1`.
+   Jalankan `pl_zava_e2e` dengan `p_batch_id = Q1`.
 2. Pipeline **gagal** di `fail_quality_gate`. Pesannya menyebutkan bahwa Gold tidak berubah.
-3. Di `wh_piep_gold`, jalankan query berikut:
+3. Di `wh_zava_gold`, jalankan query berikut:
 
    ```sql
    SELECT PublicationId, Status, BlockerCount, InfoCount FROM ops.publication WHERE PublicationId = 'PUB-Q1';
@@ -55,11 +55,11 @@ flowchart LR
 | Issue | R01 = 10, R02 = 20, R03 = 5 (BLOCKER); R10 = 100 (INFO) |
 | Publikasi aktif | Tetap **`PUB-X1`**; Gross BOE 23.901.259,782757 |
 | Report | Trust banner tetap `PUB-X1` |
-| `quarantine.production_observation` di `lh_piep_core` | 35 baris dengan alasan per aturan |
+| `quarantine.production_observation` di `lh_zava_core` | 35 baris dengan alasan per aturan |
 
 ## 2. Koreksi Q2
 
-1. Muat `Q2`, jalankan `pl_piep_e2e`, setujui, lalu jalankan `pl_piep_publish_gold` untuk `PUB-Q2`.
+1. Muat `Q2`, jalankan `pl_zava_e2e`, setujui, lalu jalankan `pl_zava_publish_gold` untuk `PUB-Q2`.
 2. Gross BOE kembali ke **23.901.259,782757**, sama dengan `PUB-X1`. Koreksi mengembalikan nilai yang benar, dan quarantine untuk batch berjalan kosong.
 
 ## 3. Source authority S1: laporan provisional tidak menggantikan angka resmi (T27)
@@ -107,8 +107,8 @@ flowchart LR
    EXEC ops.usp_approve_publication 'PUB-S2', 'APPROVE', 'Operator final correction for MY_B_W001 2025-09-20 (+5 bbl)';
    ```
 
-4. Jalankan `pl_piep_publish_gold` untuk `PUB-S2`. Pipeline me-refresh semantic model dan menjalankan `nb_06`.
-5. **Refresh ontology** `ont_piep_upstream` secara manual.
+4. Jalankan `pl_zava_publish_gold` untuk `PUB-S2`. Pipeline me-refresh semantic model dan menjalankan `nb_06`.
+5. **Refresh ontology** `ont_zava_upstream` secara manual.
 
 | Ukuran | `PUB-S1` | `PUB-S2` | Selisih |
 |---|---:|---:|---:|
@@ -149,7 +149,7 @@ flowchart LR
 flowchart LR
     Q["Gross BOE Malaysia?"] --> SQL["SQL gold.*<br/>6.364.617,036580"]
     Q --> DAX["DAX [Gross BOE]<br/>6.364.617"]
-    Q --> AG["da_piep_performance<br/>6,364,617 BOE · PUB-S2"]
+    Q --> AG["da_zava_performance<br/>6,364,617 BOE · PUB-S2"]
     SQL --- C{{Sama?}}
     DAX --- C
     AG --- C
@@ -158,7 +158,7 @@ flowchart LR
 ## 7. Uji akses (T17)
 
 1. Di semantic model, pilih **View as** role `Country IQ`. Halaman Incident INC-MY-001 harus kosong, karena insiden tersebut ada di Malaysia.
-2. Opsional dengan akun kedua: berikan hanya izin **Read** pada `sm_piep_performance`, lalu tambahkan akun tersebut ke role `Country DZ`. Ajukan EV03 ke `da_piep_performance`. Agent tidak boleh mengembalikan angka Malaysia.
+2. Opsional dengan akun kedua: berikan hanya izin **Read** pada `sm_zava_performance`, lalu tambahkan akun tersebut ke role `Country DZ`. Ajukan EV03 ke `da_zava_performance`. Agent tidak boleh mengembalikan angka Malaysia.
 
 ## Daftar bukti SSOT
 

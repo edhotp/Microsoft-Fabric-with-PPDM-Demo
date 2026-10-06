@@ -1,5 +1,5 @@
 /*
-    PIEP SSOT workshop - reproduksi angka publikasi sebelumnya dengan time travel Warehouse.
+    Zava Energy SSOT workshop - reproduksi angka publikasi sebelumnya dengan time travel Warehouse.
     Time travel: OPTION (FOR TIMESTAMP AS OF 'yyyy-MM-ddTHH:mm:ss.fff'), sekali per SELECT,
     dalam periode retensi (default 30 hari). Tidak dapat dipakai di dalam definisi VIEW.
 

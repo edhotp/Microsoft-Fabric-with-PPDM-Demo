@@ -13,7 +13,7 @@
      "secureInput": false
     },
     "linkedService": {
-     "name": "wh_piep_gold",
+     "name": "wh_zava_gold",
      "properties": {
       "annotations": [],
       "type": "DataWarehouse",
@@ -45,7 +45,7 @@
     }
    },
    {
-    "name": "sm_refresh_piep_performance",
+    "name": "sm_refresh_zava_performance",
     "type": "PBISemanticModelRefresh",
     "dependsOn": [
      {
@@ -79,7 +79,7 @@
     "type": "SqlServerStoredProcedure",
     "dependsOn": [
      {
-      "activity": "sm_refresh_piep_performance",
+      "activity": "sm_refresh_zava_performance",
       "dependencyConditions": [
        "Succeeded"
       ]
@@ -93,7 +93,7 @@
      "secureInput": false
     },
     "linkedService": {
-     "name": "wh_piep_gold",
+     "name": "wh_zava_gold",
      "properties": {
       "annotations": [],
       "type": "DataWarehouse",
@@ -162,7 +162,7 @@
        "type": "string"
       },
       "p_source_prefix": {
-       "value": "`ws-piep-ppdm-demo`.`lh_piep_core`.`serve`",
+       "value": "`ws-zava-ppdm-demo`.`lh_zava_core`.`serve`",
        "type": "string"
       }
      }
@@ -187,7 +187,7 @@
      "secureInput": false
     },
     "linkedService": {
-     "name": "wh_piep_gold",
+     "name": "wh_zava_gold",
      "properties": {
       "annotations": [],
       "type": "DataWarehouse",

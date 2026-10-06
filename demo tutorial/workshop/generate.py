@@ -1,4 +1,4 @@
-"""Deterministic synthetic source generator for the PIEP SSOT workshop.
+"""Deterministic synthetic source generator for the Zava Energy SSOT workshop.
 
 All values are synthetic. Each pack contains a full snapshot of reference
 registries and only the event rows introduced by that pack.

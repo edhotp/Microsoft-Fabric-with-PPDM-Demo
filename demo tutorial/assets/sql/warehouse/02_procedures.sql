@@ -14,31 +14,31 @@ BEGIN
         SELECT @PublicationId AS PublicationId, 'ALREADY_PUBLISHED' AS Result;
         RETURN;
     END;
-    IF (SELECT COUNT(*) FROM lh_piep_core.serve.publication_candidate WHERE PublicationId = @PublicationId) <> 1
-        THROW 50010, 'Publication candidate not found in lh_piep_core.serve.publication_candidate. Run nb_05 first or wait for SQL analytics endpoint sync.', 1;
+    IF (SELECT COUNT(*) FROM lh_zava_core.serve.publication_candidate WHERE PublicationId = @PublicationId) <> 1
+        THROW 50010, 'Publication candidate not found in lh_zava_core.serve.publication_candidate. Run nb_05 first or wait for SQL analytics endpoint sync.', 1;
 
     -- Tunggu sinkronisasi metadata SQL analytics endpoint: row count harus sama dengan manifest nb_05
     DECLARE @expectedTables int, @mismatches int;
-    SELECT @expectedTables = COUNT(*) FROM lh_piep_core.serve.publication_row_count WHERE PublicationId = @PublicationId;
+    SELECT @expectedTables = COUNT(*) FROM lh_zava_core.serve.publication_row_count WHERE PublicationId = @PublicationId;
     SELECT @mismatches = COUNT(*)
     FROM (
-        SELECT 'dim_date' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.dim_date WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'dim_asset' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.dim_asset WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'dim_well' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.dim_well WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'dim_equipment' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.dim_equipment WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'dim_incident' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.dim_incident WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'dim_scenario' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.dim_scenario WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'dim_cost_category' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.dim_cost_category WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'fact_production_daily' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.fact_production_daily WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'fact_target_daily' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.fact_target_daily WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'fact_operating_cost_monthly' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.fact_operating_cost_monthly WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'fact_downtime_event' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.fact_downtime_event WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'fact_loss_allocation' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.fact_loss_allocation WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'master_wellbore' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.master_wellbore WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'master_completion' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.master_completion WHERE PublicationId = @PublicationId
-        UNION ALL SELECT 'source_decision' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_piep_core.serve.source_decision WHERE PublicationId = @PublicationId
+        SELECT 'dim_date' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.dim_date WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'dim_asset' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.dim_asset WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'dim_well' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.dim_well WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'dim_equipment' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.dim_equipment WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'dim_incident' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.dim_incident WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'dim_scenario' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.dim_scenario WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'dim_cost_category' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.dim_cost_category WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'fact_production_daily' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.fact_production_daily WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'fact_target_daily' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.fact_target_daily WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'fact_operating_cost_monthly' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.fact_operating_cost_monthly WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'fact_downtime_event' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.fact_downtime_event WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'fact_loss_allocation' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.fact_loss_allocation WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'master_wellbore' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.master_wellbore WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'master_completion' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.master_completion WHERE PublicationId = @PublicationId
+        UNION ALL SELECT 'source_decision' AS TableName, COUNT_BIG(*) AS ActualRows FROM lh_zava_core.serve.source_decision WHERE PublicationId = @PublicationId
     ) AS a
-    JOIN lh_piep_core.serve.publication_row_count AS e
+    JOIN lh_zava_core.serve.publication_row_count AS e
       ON e.TableName = a.TableName AND e.PublicationId = @PublicationId
     WHERE e.ExpectedRows <> a.ActualRows;
     IF @expectedTables <> 15 OR @mismatches <> 0
@@ -48,49 +48,49 @@ BEGIN
     BEGIN TRY
         DELETE FROM stg.dim_date WHERE PublicationId = @PublicationId;
         INSERT INTO stg.dim_date ([DateKey], [Date], [Year], [MonthNumber], [MonthName], [YearMonth], [MonthStart], [DayOfMonth], [DaysInMonth], [PublicationId])
-        SELECT [DateKey], [Date], [Year], [MonthNumber], [MonthName], [YearMonth], [MonthStart], [DayOfMonth], [DaysInMonth], [PublicationId] FROM lh_piep_core.serve.dim_date WHERE PublicationId = @PublicationId;
+        SELECT [DateKey], [Date], [Year], [MonthNumber], [MonthName], [YearMonth], [MonthStart], [DayOfMonth], [DaysInMonth], [PublicationId] FROM lh_zava_core.serve.dim_date WHERE PublicationId = @PublicationId;
         DELETE FROM stg.dim_asset WHERE PublicationId = @PublicationId;
         INSERT INTO stg.dim_asset ([AssetKey], [AssetId], [AssetName], [CountryCode], [CountryName], [FacilityId], [PublicationId])
-        SELECT [AssetKey], [AssetId], [AssetName], [CountryCode], [CountryName], [FacilityId], [PublicationId] FROM lh_piep_core.serve.dim_asset WHERE PublicationId = @PublicationId;
+        SELECT [AssetKey], [AssetId], [AssetName], [CountryCode], [CountryName], [FacilityId], [PublicationId] FROM lh_zava_core.serve.dim_asset WHERE PublicationId = @PublicationId;
         DELETE FROM stg.dim_well WHERE PublicationId = @PublicationId;
         INSERT INTO stg.dim_well ([WellKey], [WellId], [WellName], [AssetKey], [AssetId], [CountryCode], [StreamId], [WellboreCount], [CompletionCount], [AliasList], [WellStatus], [PublicationId])
-        SELECT [WellKey], [WellId], [WellName], [AssetKey], [AssetId], [CountryCode], [StreamId], [WellboreCount], [CompletionCount], [AliasList], [WellStatus], [PublicationId] FROM lh_piep_core.serve.dim_well WHERE PublicationId = @PublicationId;
+        SELECT [WellKey], [WellId], [WellName], [AssetKey], [AssetId], [CountryCode], [StreamId], [WellboreCount], [CompletionCount], [AliasList], [WellStatus], [PublicationId] FROM lh_zava_core.serve.dim_well WHERE PublicationId = @PublicationId;
         DELETE FROM stg.dim_equipment WHERE PublicationId = @PublicationId;
         INSERT INTO stg.dim_equipment ([EquipmentKey], [EquipmentId], [EquipmentName], [EquipmentType], [FacilityId], [AssetKey], [AssetId], [CountryCode], [PublicationId])
-        SELECT [EquipmentKey], [EquipmentId], [EquipmentName], [EquipmentType], [FacilityId], [AssetKey], [AssetId], [CountryCode], [PublicationId] FROM lh_piep_core.serve.dim_equipment WHERE PublicationId = @PublicationId;
+        SELECT [EquipmentKey], [EquipmentId], [EquipmentName], [EquipmentType], [FacilityId], [AssetKey], [AssetId], [CountryCode], [PublicationId] FROM lh_zava_core.serve.dim_equipment WHERE PublicationId = @PublicationId;
         DELETE FROM stg.dim_incident WHERE PublicationId = @PublicationId;
         INSERT INTO stg.dim_incident ([IncidentKey], [IncidentId], [IncidentCategory], [EventCount], [PublicationId])
-        SELECT [IncidentKey], [IncidentId], [IncidentCategory], [EventCount], [PublicationId] FROM lh_piep_core.serve.dim_incident WHERE PublicationId = @PublicationId;
+        SELECT [IncidentKey], [IncidentId], [IncidentCategory], [EventCount], [PublicationId] FROM lh_zava_core.serve.dim_incident WHERE PublicationId = @PublicationId;
         DELETE FROM stg.dim_scenario WHERE PublicationId = @PublicationId;
         INSERT INTO stg.dim_scenario ([ScenarioKey], [ScenarioId], [ScenarioName], [PublicationId])
-        SELECT [ScenarioKey], [ScenarioId], [ScenarioName], [PublicationId] FROM lh_piep_core.serve.dim_scenario WHERE PublicationId = @PublicationId;
+        SELECT [ScenarioKey], [ScenarioId], [ScenarioName], [PublicationId] FROM lh_zava_core.serve.dim_scenario WHERE PublicationId = @PublicationId;
         DELETE FROM stg.dim_cost_category WHERE PublicationId = @PublicationId;
         INSERT INTO stg.dim_cost_category ([CostCategoryKey], [CostCategory], [PublicationId])
-        SELECT [CostCategoryKey], [CostCategory], [PublicationId] FROM lh_piep_core.serve.dim_cost_category WHERE PublicationId = @PublicationId;
+        SELECT [CostCategoryKey], [CostCategory], [PublicationId] FROM lh_zava_core.serve.dim_cost_category WHERE PublicationId = @PublicationId;
         DELETE FROM stg.fact_production_daily WHERE PublicationId = @PublicationId;
         INSERT INTO stg.fact_production_daily ([DateKey], [WellKey], [AssetKey], [StreamId], [OilBbl], [GasMscf], [WaterBbl], [GrossBoe], [WiShare], [NetWiBoe], [ObservationCount], [ExpectedObservationCount], [IsComplete], [RetractedCount], [SelectedSources], [MaxRevision], [PublicationId])
-        SELECT [DateKey], [WellKey], [AssetKey], [StreamId], [OilBbl], [GasMscf], [WaterBbl], [GrossBoe], [WiShare], [NetWiBoe], [ObservationCount], [ExpectedObservationCount], [IsComplete], [RetractedCount], [SelectedSources], [MaxRevision], [PublicationId] FROM lh_piep_core.serve.fact_production_daily WHERE PublicationId = @PublicationId;
+        SELECT [DateKey], [WellKey], [AssetKey], [StreamId], [OilBbl], [GasMscf], [WaterBbl], [GrossBoe], [WiShare], [NetWiBoe], [ObservationCount], [ExpectedObservationCount], [IsComplete], [RetractedCount], [SelectedSources], [MaxRevision], [PublicationId] FROM lh_zava_core.serve.fact_production_daily WHERE PublicationId = @PublicationId;
         DELETE FROM stg.fact_target_daily WHERE PublicationId = @PublicationId;
         INSERT INTO stg.fact_target_daily ([DateKey], [AssetKey], [ScenarioKey], [TargetOilBbl], [TargetGasMscf], [TargetBoe], [PublicationId])
-        SELECT [DateKey], [AssetKey], [ScenarioKey], [TargetOilBbl], [TargetGasMscf], [TargetBoe], [PublicationId] FROM lh_piep_core.serve.fact_target_daily WHERE PublicationId = @PublicationId;
+        SELECT [DateKey], [AssetKey], [ScenarioKey], [TargetOilBbl], [TargetGasMscf], [TargetBoe], [PublicationId] FROM lh_zava_core.serve.fact_target_daily WHERE PublicationId = @PublicationId;
         DELETE FROM stg.fact_operating_cost_monthly WHERE PublicationId = @PublicationId;
         INSERT INTO stg.fact_operating_cost_monthly ([MonthDateKey], [AssetKey], [CostCategoryKey], [CurrencyCode], [AmountLocal], [UsdPerUnit], [AmountUsd], [ClosingStatus], [CostId], [PublicationId])
-        SELECT [MonthDateKey], [AssetKey], [CostCategoryKey], [CurrencyCode], [AmountLocal], [UsdPerUnit], [AmountUsd], [ClosingStatus], [CostId], [PublicationId] FROM lh_piep_core.serve.fact_operating_cost_monthly WHERE PublicationId = @PublicationId;
+        SELECT [MonthDateKey], [AssetKey], [CostCategoryKey], [CurrencyCode], [AmountLocal], [UsdPerUnit], [AmountUsd], [ClosingStatus], [CostId], [PublicationId] FROM lh_zava_core.serve.fact_operating_cost_monthly WHERE PublicationId = @PublicationId;
         DELETE FROM stg.fact_downtime_event WHERE PublicationId = @PublicationId;
         INSERT INTO stg.fact_downtime_event ([EventId], [IncidentKey], [EquipmentKey], [AssetKey], [StartDateKey], [StartUtc], [EndUtc], [DurationHours], [Reason], [PublicationId])
-        SELECT [EventId], [IncidentKey], [EquipmentKey], [AssetKey], [StartDateKey], [StartUtc], [EndUtc], [DurationHours], [Reason], [PublicationId] FROM lh_piep_core.serve.fact_downtime_event WHERE PublicationId = @PublicationId;
+        SELECT [EventId], [IncidentKey], [EquipmentKey], [AssetKey], [StartDateKey], [StartUtc], [EndUtc], [DurationHours], [Reason], [PublicationId] FROM lh_zava_core.serve.fact_downtime_event WHERE PublicationId = @PublicationId;
         DELETE FROM stg.fact_loss_allocation WHERE PublicationId = @PublicationId;
         INSERT INTO stg.fact_loss_allocation ([LossId], [DateKey], [WellKey], [AssetKey], [IncidentKey], [EquipmentKey], [EventId], [LostOilBbl], [LostGasMscf], [LostBoeGross], [WiShare], [LostBoeNetWi], [ValueUsdGross], [ValueUsdNetWi], [PublicationId])
-        SELECT [LossId], [DateKey], [WellKey], [AssetKey], [IncidentKey], [EquipmentKey], [EventId], [LostOilBbl], [LostGasMscf], [LostBoeGross], [WiShare], [LostBoeNetWi], [ValueUsdGross], [ValueUsdNetWi], [PublicationId] FROM lh_piep_core.serve.fact_loss_allocation WHERE PublicationId = @PublicationId;
+        SELECT [LossId], [DateKey], [WellKey], [AssetKey], [IncidentKey], [EquipmentKey], [EventId], [LostOilBbl], [LostGasMscf], [LostBoeGross], [WiShare], [LostBoeNetWi], [ValueUsdGross], [ValueUsdNetWi], [PublicationId] FROM lh_zava_core.serve.fact_loss_allocation WHERE PublicationId = @PublicationId;
         DELETE FROM stg.master_wellbore WHERE PublicationId = @PublicationId;
         INSERT INTO stg.master_wellbore ([WellboreId], [WellId], [WellboreName], [PublicationId])
-        SELECT [WellboreId], [WellId], [WellboreName], [PublicationId] FROM lh_piep_core.serve.master_wellbore WHERE PublicationId = @PublicationId;
+        SELECT [WellboreId], [WellId], [WellboreName], [PublicationId] FROM lh_zava_core.serve.master_wellbore WHERE PublicationId = @PublicationId;
         DELETE FROM stg.master_completion WHERE PublicationId = @PublicationId;
         INSERT INTO stg.master_completion ([CompletionId], [WellboreId], [StreamId], [CompletionName], [PublicationId])
-        SELECT [CompletionId], [WellboreId], [StreamId], [CompletionName], [PublicationId] FROM lh_piep_core.serve.master_completion WHERE PublicationId = @PublicationId;
+        SELECT [CompletionId], [WellboreId], [StreamId], [CompletionName], [PublicationId] FROM lh_zava_core.serve.master_completion WHERE PublicationId = @PublicationId;
         DELETE FROM stg.source_decision WHERE PublicationId = @PublicationId;
         INSERT INTO stg.source_decision ([DecisionId], [CanonicalKey], [StreamId], [WellId], [BusinessDate], [Commodity], [CandidateCount], [DecisionStatus], [SelectedSourceSystem], [SelectedObservationId], [SelectedRevision], [SelectedValueStd], [Reason], [CandidatesJson], [AuthorityPolicyVersion], [PublicationId])
-        SELECT [DecisionId], [CanonicalKey], [StreamId], [WellId], [BusinessDate], [Commodity], [CandidateCount], [DecisionStatus], [SelectedSourceSystem], [SelectedObservationId], [SelectedRevision], [SelectedValueStd], [Reason], [CandidatesJson], [AuthorityPolicyVersion], [PublicationId] FROM lh_piep_core.serve.source_decision WHERE PublicationId = @PublicationId;
+        SELECT [DecisionId], [CanonicalKey], [StreamId], [WellId], [BusinessDate], [Commodity], [CandidateCount], [DecisionStatus], [SelectedSourceSystem], [SelectedObservationId], [SelectedRevision], [SelectedValueStd], [Reason], [CandidatesJson], [AuthorityPolicyVersion], [PublicationId] FROM lh_zava_core.serve.source_decision WHERE PublicationId = @PublicationId;
 
         DELETE FROM ops.publication WHERE PublicationId = @PublicationId;
         INSERT INTO ops.publication (PublicationId, BatchId, ParentBatchId, DatasetVersion, AuthorityPolicyVersion,
@@ -99,7 +99,7 @@ BEGIN
         SELECT PublicationId, BatchId, ParentBatchId, DatasetVersion, AuthorityPolicyVersion, MappingVersion,
                KpiContractVersion, UomFactorVersion, PeriodStart, PeriodEnd, ControlTotalsJson,
                BlockerCount, WarningCount, InfoCount, 'APPROVAL_PENDING', @now, COALESCE(@RunId, RunId)
-        FROM lh_piep_core.serve.publication_candidate
+        FROM lh_zava_core.serve.publication_candidate
         WHERE PublicationId = @PublicationId;
 
         INSERT INTO ops.publication_event (PublicationId, EventType, Actor, Detail, EventAtUtc)
@@ -268,12 +268,12 @@ BEGIN
             InfoCount, Message, RunId, UpdatedAtUtc, SyncedAtUtc)
         SELECT BatchId, Stage, Status, PublicationId, BlockerCount, WarningCount, InfoCount,
                LEFT(Message, 4000), RunId, UpdatedAtUtc, @now
-        FROM lh_piep_core.ops.batch_status WHERE BatchId = @BatchId;
+        FROM lh_zava_core.ops.batch_status WHERE BatchId = @BatchId;
 
         DELETE FROM ops.dq_issue_summary WHERE BatchId = @BatchId;
         INSERT INTO ops.dq_issue_summary (BatchId, Stage, RuleId, Severity, IssueCount, SyncedAtUtc)
         SELECT BatchId, Stage, RuleId, Severity, COUNT(*), @now
-        FROM lh_piep_core.ops.dq_issue WHERE BatchId = @BatchId
+        FROM lh_zava_core.ops.dq_issue WHERE BatchId = @BatchId
         GROUP BY BatchId, Stage, RuleId, Severity;
 
         IF EXISTS (SELECT 1 FROM ops.quality_evidence WHERE BatchId = @BatchId AND Status = 'QUALITY_FAILED')

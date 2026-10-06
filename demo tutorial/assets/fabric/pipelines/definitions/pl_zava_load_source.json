@@ -16,7 +16,7 @@
      "connection": "<sql_connection>"
     },
     "typeProperties": {
-     "database": "sqldb_piep_source_demo",
+     "database": "sqldb_zava_source_demo",
      "scripts": [
       {
        "type": "NonQuery",
@@ -60,7 +60,7 @@
       "type": "AzureSqlTable",
       "schema": [],
       "typeProperties": {
-       "database": "sqldb_piep_source_demo"
+       "database": "sqldb_zava_source_demo"
       },
       "externalReferences": {
        "connection": "<sql_connection>"
@@ -112,7 +112,7 @@
          "datasetSettings": {
           "annotations": [],
           "linkedService": {
-           "name": "lh_piep_core",
+           "name": "lh_zava_core",
            "properties": {
             "annotations": [],
             "type": "Lakehouse",
@@ -161,7 +161,7 @@
             "value": "@item().source_table",
             "type": "Expression"
            },
-           "database": "sqldb_piep_source_demo"
+           "database": "sqldb_zava_source_demo"
           },
           "externalReferences": {
            "connection": "<sql_connection>"
@@ -214,7 +214,7 @@
       "datasetSettings": {
        "annotations": [],
        "linkedService": {
-        "name": "lh_piep_core",
+        "name": "lh_zava_core",
         "properties": {
          "annotations": [],
          "type": "Lakehouse",
@@ -254,7 +254,7 @@
        "typeProperties": {
         "schema": "ctl",
         "table": "source_batch",
-        "database": "sqldb_piep_source_demo"
+        "database": "sqldb_zava_source_demo"
        },
        "externalReferences": {
         "connection": "<sql_connection>"
@@ -294,7 +294,7 @@
      "connection": "<sql_connection>"
     },
     "typeProperties": {
-     "database": "sqldb_piep_source_demo",
+     "database": "sqldb_zava_source_demo",
      "scripts": [
       {
        "type": "Query",

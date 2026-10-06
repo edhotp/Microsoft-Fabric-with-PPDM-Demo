@@ -6,7 +6,7 @@ Setiap lab memiliki bagian pemecahan masalah sendiri. Halaman ini mengumpulkan m
 
 | Kode | Prosedur | Arti | Tindakan |
 |---|---|---|---|
-| 50010 | `usp_stage_candidate` | Kandidat tidak ada di `lh_piep_core.serve.publication_candidate` | Jalankan `nb_05`; periksa ID publikasi |
+| 50010 | `usp_stage_candidate` | Kandidat tidak ada di `lh_zava_core.serve.publication_candidate` | Jalankan `nb_05`; periksa ID publikasi |
 | 50011 | `usp_stage_candidate` | Row count di SQL analytics endpoint belum sama dengan manifest | Tunggu 1–2 menit; pipeline melakukan retry 3× |
 | 50020 | `usp_approve_publication` | `@Decision` bukan `APPROVE`/`REJECT` | Perbaiki parameter |
 | 50021 | `usp_approve_publication` | `SUSER_SNAME()` tidak terdaftar sebagai approver aktif | Tambahkan UPN ke `ops.authorized_approver` (Lab 07) |
@@ -33,7 +33,7 @@ Setiap lab memiliki bagian pemecahan masalah sendiri. Halaman ini mengumpulkan m
 | `Batch order violation` | Batch dilewati | Proses sesuai urutan `B0 B1 C1 D1 H1 X1 Q1 Q2 S1 S2` |
 | `Batch ... is not the latest committed batch` | Menjalankan notebook Silver untuk batch lama | Silver selalu dibangun untuk batch terbaru |
 | Notebook gagal `%run nb_00_common` | Helper tidak ada di workspace yang sama | Impor `nb_00_common.ipynb` |
-| Angka report ≠ SQL | Semantic model belum di-refresh | Jalankan `pl_piep_publish_gold` atau refresh model |
+| Angka report ≠ SQL | Semantic model belum di-refresh | Jalankan `pl_zava_publish_gold` atau refresh model |
 | Agent konteks aset memakai publikasi lama | Ontology belum di-refresh / `nb_06` belum jalan | Jalankan `nb_06`, lalu refresh ontology |
 | Copy lambat | Kapasitas kecil | Kurangi `Batch count` ForEach; gunakan F8+ untuk kelas |
 | Azure SQL timeout pertama kali | Auto-pause serverless | Tunggu resume ±1 menit |
@@ -49,8 +49,8 @@ Saat meminta bantuan, sertakan informasi berikut:
 3. Hasil query berikut:
 
    ```sql
-   SELECT BatchId, Stage, Status, Message FROM ops.batch_status ORDER BY UpdatedAtUtc DESC;  -- lh_piep_core
-   SELECT * FROM ops.vw_publication_history;                                                 -- wh_piep_gold
+   SELECT BatchId, Stage, Status, Message FROM ops.batch_status ORDER BY UpdatedAtUtc DESC;  -- lh_zava_core
+   SELECT * FROM ops.vw_publication_history;                                                 -- wh_zava_gold
    ```
 
 4. Exit value notebook terakhir.

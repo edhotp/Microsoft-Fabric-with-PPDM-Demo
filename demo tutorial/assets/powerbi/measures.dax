@@ -1,4 +1,4 @@
-// PIEP SSOT - measure semantic model sm_piep_performance (Direct Lake di atas wh_piep_gold, schema gold)
+// Zava Energy SSOT - measure semantic model sm_zava_performance (Direct Lake di atas wh_zava_gold, schema gold)
 // Cara pakai: buka semantic model > Open data model > DAX query view, tempel seluruh isi file,
 // klik "Update model with changes" untuk menambahkan semua measure, lalu set format di Properties.
 // Definisi mengikuti assets/contracts/kpi_contract.csv (KPI-1.0).

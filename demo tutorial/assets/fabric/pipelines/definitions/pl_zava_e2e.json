@@ -28,7 +28,7 @@
       "type": "AzureSqlTable",
       "schema": [],
       "typeProperties": {
-       "database": "sqldb_piep_source_demo"
+       "database": "sqldb_zava_source_demo"
       },
       "externalReferences": {
        "connection": "<sql_connection>"
@@ -100,7 +100,7 @@
       "type": "AzureSqlTable",
       "schema": [],
       "typeProperties": {
-       "database": "sqldb_piep_source_demo"
+       "database": "sqldb_zava_source_demo"
       },
       "externalReferences": {
        "connection": "<sql_connection>"
@@ -152,7 +152,7 @@
           "type": "AzureSqlTable",
           "schema": [],
           "typeProperties": {
-           "database": "sqldb_piep_source_demo"
+           "database": "sqldb_zava_source_demo"
           },
           "externalReferences": {
            "connection": "<sql_connection>"
@@ -170,7 +170,7 @@
          "datasetSettings": {
           "annotations": [],
           "linkedService": {
-           "name": "lh_piep_core",
+           "name": "lh_zava_core",
            "properties": {
             "annotations": [],
             "type": "Lakehouse",
@@ -338,7 +338,7 @@
     }
    },
    {
-    "name": "df_piep_target_etl",
+    "name": "df_zava_target_etl",
     "type": "RefreshDataflow",
     "dependsOn": [
      {
@@ -356,7 +356,7 @@
      "secureInput": false
     },
     "typeProperties": {
-     "dataflowId": "<dataflow:df_piep_target_etl>",
+     "dataflowId": "<dataflow:df_zava_target_etl>",
      "workspaceId": "<core_workspace>",
      "notifyOption": "NoNotification",
      "dataflowType": "DataflowFabric",
@@ -372,7 +372,7 @@
     }
    },
    {
-    "name": "df_piep_cost_etl",
+    "name": "df_zava_cost_etl",
     "type": "RefreshDataflow",
     "dependsOn": [
      {
@@ -390,7 +390,7 @@
      "secureInput": false
     },
     "typeProperties": {
-     "dataflowId": "<dataflow:df_piep_cost_etl>",
+     "dataflowId": "<dataflow:df_zava_cost_etl>",
      "workspaceId": "<core_workspace>",
      "notifyOption": "NoNotification",
      "dataflowType": "DataflowFabric",
@@ -416,13 +416,13 @@
       ]
      },
      {
-      "activity": "df_piep_target_etl",
+      "activity": "df_zava_target_etl",
       "dependencyConditions": [
        "Succeeded"
       ]
      },
      {
-      "activity": "df_piep_cost_etl",
+      "activity": "df_zava_cost_etl",
       "dependencyConditions": [
        "Succeeded"
       ]
@@ -514,7 +514,7 @@
      "secureInput": false
     },
     "linkedService": {
-     "name": "wh_piep_gold",
+     "name": "wh_zava_gold",
      "properties": {
       "annotations": [],
       "type": "DataWarehouse",
@@ -564,7 +564,7 @@
      "secureInput": false
     },
     "linkedService": {
-     "name": "wh_piep_gold",
+     "name": "wh_zava_gold",
      "properties": {
       "annotations": [],
       "type": "DataWarehouse",
@@ -614,7 +614,7 @@
      "secureInput": false
     },
     "linkedService": {
-     "name": "wh_piep_gold",
+     "name": "wh_zava_gold",
      "properties": {
       "annotations": [],
       "type": "DataWarehouse",
@@ -658,7 +658,7 @@
     ],
     "typeProperties": {
      "message": {
-      "value": "@concat('Batch ', pipeline().parameters.p_batch_id, ' failed the SSOT quality gate. Gold is unchanged. Check ops.quality_evidence and ops.dq_issue_summary in wh_piep_gold.')",
+      "value": "@concat('Batch ', pipeline().parameters.p_batch_id, ' failed the SSOT quality gate. Gold is unchanged. Check ops.quality_evidence and ops.dq_issue_summary in wh_zava_gold.')",
       "type": "Expression"
      },
      "errorCode": "QUALITY_GATE"

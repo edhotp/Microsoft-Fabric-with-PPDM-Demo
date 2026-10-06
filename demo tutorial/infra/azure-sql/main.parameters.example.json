@@ -2,8 +2,8 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "serverName": { "value": "sql-piep-ssot-REPLACE" },
-    "databaseName": { "value": "sqldb_piep_source_demo" },
+    "serverName": { "value": "sql-zava-ssot-REPLACE" },
+    "databaseName": { "value": "sqldb_zava_source_demo" },
     "entraAdminLogin": { "value": "REPLACE@yourtenant.example" },
     "entraAdminObjectId": { "value": "00000000-0000-0000-0000-000000000000" },
     "entraAdminPrincipalType": { "value": "User" },

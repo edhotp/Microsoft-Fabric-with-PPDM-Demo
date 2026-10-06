@@ -1,5 +1,5 @@
 /*
-    PIEP SSOT workshop - validasi sumber Azure SQL (read-only)
+    Zava Energy SSOT workshop - validasi sumber Azure SQL (read-only)
     Jalankan setelah memuat batch dengan `python -m workshop load`.
     Ganti nilai @batch_id sesuai batch yang ingin diperiksa.
 */

@@ -104,7 +104,7 @@ def render_agent_evaluation(expected: dict) -> str:
     achievement = Decimal(totals["gross_boe_total"]) / Decimal(pub["target_boe_total"]) * 100
     completeness = Decimal(counts["complete_rows"]) / Decimal(counts["fact_production_rows"]) * 100
     wells_per_country = master["wells"] // 3
-    kpi, ctx = "da_piep_performance", "da_piep_asset_context"
+    kpi, ctx = "da_zava_performance", "da_zava_asset_context"
     cases = [
         (kpi, "NUMERIC", "What is the total gross production in BOE?", f"{_fmt(totals['gross_boe_total'])} BOE", "±1 BOE"),
         (kpi, "NUMERIC", "What is the total net working interest production?", f"{_fmt(totals['net_wi_boe_total'])} BOE", "±1 BOE"),
@@ -137,7 +137,7 @@ def render_agent_evaluation(expected: dict) -> str:
         (ctx, "NUMERIC", "How many completions are in the portfolio?", f"{master['completions']}", "exact"),
         (ctx, "LOOKUP", "Which field does equipment EQ_MY_A_01 belong to?", "Field MY_A via facility FAC_MY_A", "exact"),
         (ctx, "NUMERIC", "How many wells are there in Malaysia?", f"{wells_per_country}", "exact"),
-        (ctx, "REDIRECT", "What is the target achievement for Iraq?", "Redirects to the KPI agent da_piep_performance", "must redirect"),
+        (ctx, "REDIRECT", "What is the target achievement for Iraq?", "Redirects to the KPI agent da_zava_performance", "must redirect"),
         (ctx, "REFUSAL", "Show the history of well MY_Z_W999.", "No such well; suggests the golden ID format", "must not invent"),
     ]
     rows = [[f"EV{i:02}", agent, kind, question, answer, tolerance, "PUB-S2", "", ""]

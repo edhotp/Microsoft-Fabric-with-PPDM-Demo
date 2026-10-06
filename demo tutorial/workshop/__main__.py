@@ -1,4 +1,4 @@
-"""Command line for the PIEP SSOT workshop.
+"""Command line for the Zava Energy SSOT workshop.
 
 Examples (run from the `demo tutorial` folder):
     python -m workshop generate --profile standard
@@ -85,9 +85,9 @@ def cmd_render_pipelines(args) -> int:
         "sql_connection", "semantic_model", "semantic_model_connection",
         "notebook:nb_01_land_bronze", "notebook:nb_02_conform_master_ppdm", "notebook:nb_03_conform_production",
         "notebook:nb_04_conform_business", "notebook:nb_05_validate_and_serve", "notebook:nb_06_prepare_ai_serving",
-        "dataflow:df_piep_target_etl", "dataflow:df_piep_cost_etl"]}
-    placeholders["sql_database"] = "sqldb_piep_source_demo"
-    placeholders["core_workspace_name"] = "ws-piep-ppdm-demo"
+        "dataflow:df_zava_target_etl", "dataflow:df_zava_cost_etl"]}
+    placeholders["sql_database"] = "sqldb_zava_source_demo"
+    placeholders["core_workspace_name"] = "ws-zava-ppdm-demo"
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
     for name, body in render(placeholders).items():
@@ -162,7 +162,7 @@ def cmd_verify(args) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="python -m workshop", description="PIEP SSOT workshop tools")
+    parser = argparse.ArgumentParser(prog="python -m workshop", description="Zava Energy SSOT workshop tools")
     sub = parser.add_subparsers(dest="command", required=True)
 
     p = sub.add_parser("generate", help="Generate synthetic source packs as CSV")
@@ -191,8 +191,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("deploy-pipelines", help="Create or update the workshop pipelines in Fabric (uses az login)")
     p.add_argument("--config", required=True)
-    p.add_argument("--pipeline", action="append", choices=["pl_piep_setup_source", "pl_piep_load_source",
-                                                          "pl_piep_e2e", "pl_piep_publish_gold"])
+    p.add_argument("--pipeline", action="append", choices=["pl_zava_setup_source", "pl_zava_load_source",
+                                                          "pl_zava_e2e", "pl_zava_publish_gold"])
     p.set_defaults(func=cmd_deploy_pipelines)
 
     p = sub.add_parser("evaluate-agents", help="Ask the published data agents the 24 evaluation cases (uses az login)")

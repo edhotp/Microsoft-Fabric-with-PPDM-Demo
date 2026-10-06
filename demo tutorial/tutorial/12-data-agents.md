@@ -4,43 +4,43 @@ Data agent memungkinkan pengguna bertanya dalam bahasa alami. Dalam konteks SSOT
 
 Dalam lab ini Anda akan:
 
-- [ ] Membuat `da_piep_performance` di atas semantic model untuk pertanyaan KPI.
-- [ ] Membuat `da_piep_asset_context` dengan ontology sebagai konteks dan Lakehouse AI sebagai sumber query.
+- [ ] Membuat `da_zava_performance` di atas semantic model untuk pertanyaan KPI.
+- [ ] Membuat `da_zava_asset_context` dengan ontology sebagai konteks dan Lakehouse AI sebagai sumber query.
 - [ ] Menulis instruksi agent, menambahkan contoh query, dan menguji konsistensi lintas kanal.
 
 ## Prasyarat
 
 - [Lab 11](11-ontology.md) selesai.
 - Gate **G5**: kapasitas **berbayar F2+**, tenant setting data agent serta Copilot/Azure OpenAI aktif, dan kapasitas, agent, serta sumber berada di region yang sama.
-- Izin **Read** pada `sm_piep_performance` dan akses baca ke `lh_piep_ai`.
+- Izin **Read** pada `sm_zava_performance` dan akses baca ke `lh_zava_ai`.
 
 ## Dua agent, dua tanggung jawab
 
 ```mermaid
 flowchart LR
-    U((Pengguna)) --> A1[da_piep_performance]
-    U --> A2[da_piep_asset_context]
-    A1 -->|DAX - measure kontrak KPI| SM[(sm_piep_performance<br/>Gold publikasi aktif)]
-    A2 -->|konteks: entity, relasi, sinonim| ONT[ont_piep_upstream]
-    A2 -->|SQL| LHAI[(lh_piep_ai.ai.*)]
+    U((Pengguna)) --> A1[da_zava_performance]
+    U --> A2[da_zava_asset_context]
+    A1 -->|DAX - measure kontrak KPI| SM[(sm_zava_performance<br/>Gold publikasi aktif)]
+    A2 -->|konteks: entity, relasi, sinonim| ONT[ont_zava_upstream]
+    A2 -->|SQL| LHAI[(lh_zava_ai.ai.*)]
     ONT -. binding .-> LHAI
     A2 -. "pertanyaan KPI → arahkan" .-> A1
 ```
 
 | Agent | Jenis pertanyaan | Sumber | Contoh |
 |---|---|---|---|
-| `da_piep_performance` | Berapa? (KPI, target, biaya, loss) | Semantic model | "What is the gross production for Malaysia?" |
-| `da_piep_asset_context` | Apa terhubung dengan apa? Mengapa nilai ini dipilih? | Ontology + `lh_piep_ai` | "Which wells lost production because of INC-MY-001?" |
+| `da_zava_performance` | Berapa? (KPI, target, biaya, loss) | Semantic model | "What is the gross production for Malaysia?" |
+| `da_zava_asset_context` | Apa terhubung dengan apa? Mengapa nilai ini dipilih? | Ontology + `lh_zava_ai` | "Which wells lost production because of INC-MY-001?" |
 
 > [!NOTE]
 > Data agent saat ini mendukung bahasa Inggris. Karena itu, instruksi dan pertanyaan evaluasi ditulis dalam bahasa Inggris. Data agent hanya dapat membaca data dan menjalankan query dengan identitas pengguna yang bertanya.
 
-## 1. Buat `da_piep_performance`
+## 1. Buat `da_zava_performance`
 
-1. Di `ws-piep-ppdm-ai-demo`, pilih **+ New item** > **Data agent**, lalu beri nama **`da_piep_performance`**.
-2. Pilih **Add data source**. Di OneLake catalog, pilih semantic model **`sm_piep_performance`** dari `ws-piep-ppdm-demo`.
-3. Buka **Agent instructions**, lalu tempel instruksi dari [`da_piep_performance_instructions.md`](../assets/agents/da_piep_performance_instructions.md). Tempel hanya teks di bawah garis `---`.
-4. Pada sumber `sm_piep_performance`, buka **Data source instructions**, lalu tempel teks dari [`da_piep_performance_datasource_instructions.md`](../assets/agents/da_piep_performance_datasource_instructions.md).
+1. Di `ws-zava-ppdm-ai-demo`, pilih **+ New item** > **Data agent**, lalu beri nama **`da_zava_performance`**.
+2. Pilih **Add data source**. Di OneLake catalog, pilih semantic model **`sm_zava_performance`** dari `ws-zava-ppdm-demo`.
+3. Buka **Agent instructions**, lalu tempel instruksi dari [`da_zava_performance_instructions.md`](../assets/agents/da_zava_performance_instructions.md). Tempel hanya teks di bawah garis `---`.
+4. Pada sumber `sm_zava_performance`, buka **Data source instructions**, lalu tempel teks dari [`da_zava_performance_datasource_instructions.md`](../assets/agents/da_zava_performance_datasource_instructions.md).
 
    > [!IMPORTANT]
    > Langkah ini wajib. Instruksi sumber data diteruskan ke pembuat query DAX. Tanpa instruksi ini, pengujian workshop menunjukkan agent mencoba memfilter `PublicationId` dan menjawab bahwa INC-MY-001 tidak memiliki data loss, padahal datanya ada. Pastikan juga semua kolom `PublicationId` di tabel `gold` disembunyikan (Lab 09).
@@ -53,16 +53,16 @@ flowchart LR
 > [!NOTE]
 > Contoh pasangan pertanyaan–query (*example queries*) tidak didukung untuk sumber semantic model. Kualitas jawaban agent KPI bergantung pada nama dan deskripsi measure serta instruksi agent.
 
-## 2. Buat `da_piep_asset_context`
+## 2. Buat `da_zava_asset_context`
 
-1. Buat data agent baru **`da_piep_asset_context`**.
-2. Pilih **Add sources** > **Add an ontology**, lalu pilih **`ont_piep_upstream`**. Bentangkan ontology untuk melihat sumber dasarnya, yaitu `lh_piep_ai`.
-3. Tempel instruksi dari [`da_piep_asset_context_instructions.md`](../assets/agents/da_piep_asset_context_instructions.md).
-4. Pada sumber Lakehouse yang tersedia, buka **Example queries**. Tambahkan pasangan pertanyaan–SQL dari [`da_piep_asset_context_example_queries.sql`](../assets/agents/da_piep_asset_context_example_queries.sql). Baris komentar adalah pertanyaan, dan query di bawahnya adalah SQL.
+1. Buat data agent baru **`da_zava_asset_context`**.
+2. Pilih **Add sources** > **Add an ontology**, lalu pilih **`ont_zava_upstream`**. Bentangkan ontology untuk melihat sumber dasarnya, yaitu `lh_zava_ai`.
+3. Tempel instruksi dari [`da_zava_asset_context_instructions.md`](../assets/agents/da_zava_asset_context_instructions.md).
+4. Pada sumber Lakehouse yang tersedia, buka **Example queries**. Tambahkan pasangan pertanyaan–SQL dari [`da_zava_asset_context_example_queries.sql`](../assets/agents/da_zava_asset_context_example_queries.sql). Baris komentar adalah pertanyaan, dan query di bawahnya adalah SQL.
 5. Uji pertanyaan berikut:
    - *Which wells lost production because of incident INC-MY-001?*
    - *Which golden well is the source alias MYB001?*
-   - *What is the target achievement for Iraq?* Agent harus mengarahkan pengguna ke `da_piep_performance`.
+   - *What is the target achievement for Iraq?* Agent harus mengarahkan pengguna ke `da_zava_performance`.
 6. Pilih **Publish**.
 
 > [!IMPORTANT]
@@ -76,7 +76,7 @@ Kunci jawaban [`agent_evaluation_cases.csv`](../assets/agents/agent_evaluation_c
 2. Isi tabel **Konsistensi lintas kanal** dengan nilai berikut:
    - SQL dari `04_validate_gold.sql`;
    - DAX dari `validation_queries.dax`;
-   - jawaban `da_piep_performance` untuk pertanyaan EV01, EV02, EV03, dan EV08.
+   - jawaban `da_zava_performance` untuk pertanyaan EV01, EV02, EV03, dan EV08.
 3. Untuk setiap jawaban agent, buka detail langkah atau query yang dijalankan agent, lalu periksa apakah agent memakai measure yang benar.
 
 Semua nilai harus **sama** dan menyebut ID publikasi yang sama.

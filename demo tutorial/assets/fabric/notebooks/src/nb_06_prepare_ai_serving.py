@@ -5,11 +5,11 @@
 # Notebook ini membaca kandidat serving untuk `p_publication_id` yang **sama** dengan Gold dan menulis
 # tabel terkelola `ai.*` di Lakehouse AI. Tabel AI tidak menghitung KPI baru dan tidak diedit manual.
 #
-# **Lakehouse default:** `lh_piep_ai` (schema-enabled) di workspace AI.
+# **Lakehouse default:** `lh_zava_ai` (schema-enabled) di workspace AI.
 
 # %% [parameters]
 p_publication_id = "PUB-B0"
-p_source_prefix = "`ws-piep-ppdm-demo`.`lh_piep_core`.`serve`"
+p_source_prefix = "`ws-zava-ppdm-demo`.`lh_zava_core`.`serve`"
 p_run_id = "manual"
 p_table_format = "delta"
 

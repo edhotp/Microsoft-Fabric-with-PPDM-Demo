@@ -1,10 +1,10 @@
-# Spesifikasi semantic model dan laporan `PIEP SSOT`
+# Spesifikasi semantic model dan laporan `Zava Energy SSOT`
 
 Dokumen ini adalah kontrak build untuk Lab 09 (semantic model) dan Lab 10 (report). Semua nama tabel dan kolom sesuai `assets/sql/warehouse/01_create_objects.sql`.
 
-## Semantic model `sm_piep_performance`
+## Semantic model `sm_zava_performance`
 
-- **Mode:** Direct Lake, sumber `wh_piep_gold`.
+- **Mode:** Direct Lake, sumber `wh_zava_gold`.
 - **Tabel dari schema `gold`:** `dim_date`, `dim_asset`, `dim_well`, `dim_equipment`, `dim_incident`, `dim_scenario`, `dim_cost_category`, `fact_production_daily`, `fact_target_daily`, `fact_operating_cost_monthly`, `fact_downtime_event`, `fact_loss_allocation`, dan `source_decision`.
 - **Tabel dari schema `ops`:** `publication`. Gunakan tabel fisik, jangan view, supaya Direct Lake tidak fallback ke DirectQuery.
 - **Tabel stg tidak dipakai:** jangan pilih tabel `stg.*`. Tabel tersebut berisi kandidat yang belum disetujui.
@@ -68,9 +68,9 @@ Tambahkan semua measure dari [`measures.dax`](measures.dax) melalui DAX query vi
 
 Uji role dengan **View as**. Role tidak menggantikan izin workspace; workspace Viewer tetap memerlukan izin *Build* atau *Read* sesuai skenario.
 
-## Laporan `PIEP SSOT - Performance & Data Trust`
+## Laporan `Zava Energy SSOT - Performance & Data Trust`
 
-Terapkan tema [`piep-ssot-theme.json`](piep-ssot-theme.json). Tema ini adalah palet workshop, bukan brand resmi Pertamina. Kanvas 16:9 (1280 × 720).
+Terapkan tema [`zava-ssot-theme.json`](zava-ssot-theme.json). Tema ini adalah palet workshop, bukan brand resmi perusahaan mana pun. Kanvas 16:9 (1280 × 720).
 
 | # | Halaman | Pertanyaan bisnis | Visual utama |
 |---|---|---|---|

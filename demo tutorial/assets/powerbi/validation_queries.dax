@@ -1,4 +1,4 @@
-// PIEP SSOT - query validasi DAX (jalankan di DAX query view setelah measure ditambahkan).
+// Zava Energy SSOT - query validasi DAX (jalankan di DAX query view setelah measure ditambahkan).
 // Bandingkan dengan assets/expected/expected-results-standard.json dan assets/sql/warehouse/04_validate_gold.sql.
 // Angka di semantic model, Warehouse, dan data agent HARUS sama untuk publikasi yang sama.
 

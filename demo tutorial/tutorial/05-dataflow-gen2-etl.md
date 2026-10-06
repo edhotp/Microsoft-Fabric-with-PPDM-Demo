@@ -28,13 +28,13 @@ flowchart LR
 
 ## 1. Siapkan schema staging
 
-1. Buka `lh_piep_core`.
+1. Buka `lh_zava_core`.
 2. Di Explorer, pilih **...** di samping **Tables** > **New schema**.
 3. Beri nama **`stg_df`**.
 
-## 2. Buat `df_piep_target_etl`
+## 2. Buat `df_zava_target_etl`
 
-1. Di workspace `ws-piep-ppdm-demo`, pilih **+ New item** > **Dataflow Gen2**. Beri nama `df_piep_target_etl` dan biarkan **Git integration, deployment pipelines and Public API scenarios** tetap aktif agar Dataflow mendukung CI/CD.
+1. Di workspace `ws-zava-ppdm-demo`, pilih **+ New item** > **Dataflow Gen2**. Beri nama `df_zava_target_etl` dan biarkan **Git integration, deployment pipelines and Public API scenarios** tetap aktif agar Dataflow mendukung CI/CD.
 2. Pilih **Home** > **Manage parameters** > **New parameter**:
 
    | Properti | Nilai |
@@ -44,8 +44,8 @@ flowchart LR
    | Type | Text |
    | Current value | `B0` |
 
-3. Pilih **Get data** > **Blank query**. Buka **Advanced editor**, lalu tempel isi [`df_piep_target_etl.pq`](../assets/fabric/dataflows/df_piep_target_etl.pq). Ganti `<SERVER>` dengan nama logical server Anda.
-4. Saat diminta, pilih **Configure connection** dan gunakan koneksi Azure SQL dengan **Organizational account**. Pada opsi B (SQL privat), pilih koneksi `conn_sql_piep_source` pada VNet data gateway `vnetgw-piep-ssot`. Seluruh Dataflow, termasuk penulisan ke Lakehouse, akan berjalan melalui gateway tersebut.
+3. Pilih **Get data** > **Blank query**. Buka **Advanced editor**, lalu tempel isi [`df_zava_target_etl.pq`](../assets/fabric/dataflows/df_zava_target_etl.pq). Ganti `<SERVER>` dengan nama logical server Anda.
+4. Saat diminta, pilih **Configure connection** dan gunakan koneksi Azure SQL dengan **Organizational account**. Pada opsi B (SQL privat), pilih koneksi `conn_sql_zava_source` pada VNet data gateway `vnetgw-zava-ssot`. Seluruh Dataflow, termasuk penulisan ke Lakehouse, akan berjalan melalui gateway tersebut.
 5. Ganti nama query menjadi **`target_monthly`**.
 6. Periksa langkah **Unpivoted** dan **WithStatus** di panel *Applied steps*. Setiap baris sumber berubah menjadi 12 baris bulanan dengan `month_start` dan `dq_status`.
 
@@ -53,7 +53,7 @@ flowchart LR
 
 1. Pilih **+** di kanan bawah query, atau **Home** > **Add data destination**, lalu pilih **Lakehouse**.
 2. Pada koneksi Lakehouse, aktifkan **Navigate using full hierarchy**. Tanpa opsi ini, schema Lakehouse tidak ditampilkan.
-3. Pilih `ws-piep-ppdm-demo` > `lh_piep_core` > **`stg_df`** > **New table** `target_monthly`.
+3. Pilih `ws-zava-ppdm-demo` > `lh_zava_core` > **`stg_df`** > **New table** `target_monthly`.
 4. Pilih **Update method = Replace** dan biarkan schema mapping mengikuti tipe kolom M.
 5. Pilih **Save settings**.
 
@@ -63,22 +63,22 @@ flowchart LR
 2. Centang **Enable parameters to be discovered and override for execution**, lalu pilih **OK**.
 3. Pilih **Save**, lalu **Run**.
 
-## 3. Buat `df_piep_cost_etl`
+## 3. Buat `df_zava_cost_etl`
 
 Ulangi langkah 2 dengan perbedaan berikut:
 
 | Pengaturan | Nilai |
 |---|---|
-| Nama Dataflow | `df_piep_cost_etl` |
-| Skrip M | [`df_piep_cost_etl.pq`](../assets/fabric/dataflows/df_piep_cost_etl.pq) |
+| Nama Dataflow | `df_zava_cost_etl` |
+| Skrip M | [`df_zava_cost_etl.pq`](../assets/fabric/dataflows/df_zava_cost_etl.pq) |
 | Nama query/tabel | `cost_monthly` |
-| Destination | `lh_piep_core` > `stg_df` > `cost_monthly`, Replace |
+| Destination | `lh_zava_core` > `stg_df` > `cost_monthly`, Replace |
 
 Skrip ini melakukan *left join* biaya ke kurs bulanan. Baris tanpa kurs diberi status `MISSING_FX`, dan jumlah negatif diberi status `NEGATIVE_AMOUNT`. Kedua status tersebut menjadi blocker B03 di Lab 06.
 
 ## Verifikasi
 
-Di SQL analytics endpoint `lh_piep_core`, jalankan:
+Di SQL analytics endpoint `lh_zava_core`, jalankan:
 
 ```sql
 SELECT batch_id, dq_status, COUNT(*) AS rows_count, SUM(target_value) AS total_value

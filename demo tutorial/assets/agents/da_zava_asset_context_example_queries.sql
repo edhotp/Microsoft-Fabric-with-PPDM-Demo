@@ -1,4 +1,4 @@
--- Example queries for the data agent da_piep_asset_context (data source: lh_piep_ai, SQL analytics endpoint).
+-- Example queries for the data agent da_zava_asset_context (data source: lh_zava_ai, SQL analytics endpoint).
 -- Add each pair under "Example queries" for the Lakehouse source: the comment line is the question.
 
 -- Which wells lost production because of incident INC-MY-001 and how much?

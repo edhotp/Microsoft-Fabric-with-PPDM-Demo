@@ -1,10 +1,10 @@
-// df_piep_cost_etl - Dataflow Gen2 (ETL): opex closing + kurs -> stg_df.cost_monthly
+// df_zava_cost_etl - Dataflow Gen2 (ETL): opex closing + kurs -> stg_df.cost_monthly
 // Parameter (Home > Manage parameters): pBatchId (Text, tidak required, current value B0)
 // Ganti <SERVER> dengan nama logical server Azure SQL Anda. Server/database TIDAK diparameterkan karena public
 // parameters tidak boleh mengubah path sumber atau destination.
-// Destination: Lakehouse lh_piep_core, schema stg_df, table cost_monthly, Update method = Replace.
+// Destination: Lakehouse lh_zava_core, schema stg_df, table cost_monthly, Update method = Replace.
 let
-    Source = Sql.Database("<SERVER>.database.windows.net", "sqldb_piep_source_demo"),
+    Source = Sql.Database("<SERVER>.database.windows.net", "sqldb_zava_source_demo"),
     Cost = Table.SelectRows(Source{[Schema = "ref", Item = "operating_cost"]}[Data], each [batch_id] = pBatchId),
     Fx = Table.SelectColumns(
         Table.SelectRows(Source{[Schema = "ref", Item = "fx_rate"]}[Data], each [batch_id] = pBatchId),

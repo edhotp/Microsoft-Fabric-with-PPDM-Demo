@@ -14,7 +14,7 @@ Gunakan langkah ini untuk menjalankan ulang workshop dari `B0` tanpa membuat ula
    ```
 
    Tabel `ctl.entity_config` tidak terhapus karena tidak terdaftar sebagai entitasnya sendiri.
-2. **Lakehouse `lh_piep_core`:** jalankan di notebook baru dengan `lh_piep_core` sebagai default:
+2. **Lakehouse `lh_zava_core`:** jalankan di notebook baru dengan `lh_zava_core` sebagai default:
 
    ```python
    for schema in ["bronze", "silver", "silver_ext", "quarantine", "ops", "serve", "stg_df"]:
@@ -23,7 +23,7 @@ Gunakan langkah ini untuk menjalankan ulang workshop dari `B0` tanpa membuat ula
    spark.sql("CREATE SCHEMA IF NOT EXISTS stg_df")
    ```
 
-3. **Warehouse `wh_piep_gold`:** jalankan di SQL query editor:
+3. **Warehouse `wh_zava_gold`:** jalankan di SQL query editor:
 
    ```sql
    DECLARE @sql nvarchar(max) = N'';
@@ -33,7 +33,7 @@ Gunakan langkah ini untuk menjalankan ulang workshop dari `B0` tanpa membuat ula
    EXEC sys.sp_executesql @sql;
    ```
 
-4. **Lakehouse `lh_piep_ai`:** jalankan `spark.sql("DROP SCHEMA IF EXISTS ai CASCADE")`, lalu refresh ontology setelah `nb_06` berjalan lagi.
+4. **Lakehouse `lh_zava_ai`:** jalankan `spark.sql("DROP SCHEMA IF EXISTS ai CASCADE")`, lalu refresh ontology setelah `nb_06` berjalan lagi.
 5. Muat ulang `B0` (Lab 03, langkah 4) dan lanjutkan dari Lab 04.
 
 > [!NOTE]
@@ -41,12 +41,12 @@ Gunakan langkah ini untuk menjalankan ulang workshop dari `B0` tanpa membuat ula
 
 ## Hapus semua resource
 
-1. **Fabric:** hapus workspace `ws-piep-ppdm-demo` dan `ws-piep-ppdm-ai-demo` melalui **Workspace settings** > **General** > **Remove this workspace**. Semua item di dalamnya ikut terhapus.
-2. **Koneksi dan gateway:** hapus `conn_sql_piep_source` di **Settings** > **Manage connections and gateways**. Jika memakai opsi B, hapus juga VNet data gateway `vnetgw-piep-ssot`. Gateway harus dihapus sebelum VNet agar delegasi subnet terlepas.
+1. **Fabric:** hapus workspace `ws-zava-ppdm-demo` dan `ws-zava-ppdm-ai-demo` melalui **Workspace settings** > **General** > **Remove this workspace**. Semua item di dalamnya ikut terhapus.
+2. **Koneksi dan gateway:** hapus `conn_sql_zava_source` di **Settings** > **Manage connections and gateways**. Jika memakai opsi B, hapus juga VNet data gateway `vnetgw-zava-ssot`. Gateway harus dihapus sebelum VNet agar delegasi subnet terlepas.
 3. **Azure:**
 
    ```powershell
-   az group delete --name rg-piep-ppdm-demo --yes --no-wait
+   az group delete --name rg-zava-ppdm-demo --yes --no-wait
    ```
 
 4. **Lokal:** hapus `data/`, `config/local.json`, folder `evidence/`, dan virtual environment `.venv`.

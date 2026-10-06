@@ -11,11 +11,11 @@ Dalam lab ini Anda akan:
 ## Prasyarat
 
 - [Lab 00](00-preflight.md) selesai.
-- Pengetahuan dasar tentang PPDM. Lihat [PPDM_DAN_RELEVANSINYA_UNTUK_PIEP.md](../../PPDM_DAN_RELEVANSINYA_UNTUK_PIEP.md).
+- Pengetahuan dasar tentang PPDM. Lihat [PPDM Association](https://ppdm.org/).
 
 ## 1. Pahami masalah yang diselesaikan SSOT
 
-PIEP mengoperasikan aset di beberapa negara. Setiap negara memiliki sistem pelaporan dengan nama kolom, satuan, dan ID sumur berbeda. Dalam workshop ini tiga negara sintetis mewakili pola tersebut:
+Zava Energy mengoperasikan aset di beberapa negara. Setiap negara memiliki sistem pelaporan dengan nama kolom, satuan, dan ID sumur berbeda. Dalam workshop ini tiga negara sintetis mewakili pola tersebut:
 
 | Sumber | Negara | Ciri khas | Status yang diterima |
 |---|---|---|---|

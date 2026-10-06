@@ -20,7 +20,7 @@ Dalam lab ini Anda akan:
 | Gate | Pemeriksaan | Siapa | Status |
 |---|---|---|---|
 | G0 - Kontrak SSOT | Peserta membaca [Lab 01](01-ssot-authority-ppdm-alignment.md); fasilitator menyetujui register authority demo | Fasilitator | ☐ |
-| G1 - Azure | Subscription dan resource group `rg-piep-ppdm-demo`, peran **Contributor** pada resource group. Periksa apakah kebijakan organisasi melarang endpoint publik Azure SQL; jika ya, siapkan [opsi B jaringan privat](03-azure-sql-source.md#opsi-b---jaringan-privat-tanpa-endpoint-publik) | Admin Azure | ☐ |
+| G1 - Azure | Subscription dan resource group `rg-zava-ppdm-demo`, peran **Contributor** pada resource group. Periksa apakah kebijakan organisasi melarang endpoint publik Azure SQL; jika ya, siapkan [opsi B jaringan privat](03-azure-sql-source.md#opsi-b---jaringan-privat-tanpa-endpoint-publik) | Admin Azure | ☐ |
 | G2 - Fabric | Kapasitas F aktif, workspace bisa dibuat, peserta **Admin/Member** di workspace | Admin Fabric | ☐ |
 | G3 - Power BI | Lisensi Power BI Pro/PPU untuk author bila kapasitas < F64 | Admin M365 | ☐ |
 | G4 - Ontology | Tenant setting **Users can create ontology (preview) items** dan **Users can create Fabric items** aktif | Admin Fabric | ☐ |
@@ -34,8 +34,8 @@ Dalam lab ini Anda akan:
 
 1. Buka [Microsoft Fabric](https://app.fabric.microsoft.com) dan masuk dengan akun organisasi.
 2. Pilih **Workspaces** > **+ New workspace**.
-3. Buat workspace **`ws-piep-ppdm-demo`**. Di **Advanced**, pilih kapasitas F yang disiapkan fasilitator.
-4. Ulangi untuk workspace AI **`ws-piep-ppdm-ai-demo`** pada kapasitas dan region yang **sama**.
+3. Buat workspace **`ws-zava-ppdm-demo`**. Di **Advanced**, pilih kapasitas F yang disiapkan fasilitator.
+4. Ulangi untuk workspace AI **`ws-zava-ppdm-ai-demo`** pada kapasitas dan region yang **sama**.
 5. Minta admin Fabric memastikan pengaturan tenant berikut di **Admin portal** > **Tenant settings**:
 
    | Pengaturan | Dipakai di |
