@@ -132,8 +132,7 @@ SELECT COUNT(*) AS rows_my FROM bronze.src_my__production_report;
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 05 - ETL dengan Dataflow Gen2](05-dataflow-gen2-etl.md)
+**Lanjut ke:** [Lab 05 - ETL dengan Dataflow Gen2](05-dataflow-gen2-etl.md) →
 
 ## Referensi
 

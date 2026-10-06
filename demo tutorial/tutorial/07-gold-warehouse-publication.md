@@ -129,8 +129,7 @@ Jalankan [`04_validate_gold.sql`](../assets/sql/warehouse/04_validate_gold.sql).
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 08 - Orkestrasi dan pemulihan](08-orchestration.md)
+**Lanjut ke:** [Lab 08 - Orkestrasi dan pemulihan](08-orchestration.md) →
 
 ## Referensi
 

@@ -149,8 +149,7 @@ Anda dapat menjelaskan dengan kata-kata sendiri:
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 02 - Generator data sintetis](02-synthetic-data-generator.md)
+**Lanjut ke:** [Lab 02 - Generator data sintetis](02-synthetic-data-generator.md) →
 
 ## Referensi
 

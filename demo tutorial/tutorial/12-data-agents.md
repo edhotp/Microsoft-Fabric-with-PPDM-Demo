@@ -111,8 +111,7 @@ Jika agent menghitung ulang dari kolom mentah, misalnya `SUM(GrossBoe)` tanpa me
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 13 - Bukti SSOT dan failure drill](13-ssot-proof-failure-drill.md)
+**Lanjut ke:** [Lab 13 - Bukti SSOT dan failure drill](13-ssot-proof-failure-drill.md) →
 
 ## Referensi
 

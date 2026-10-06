@@ -103,8 +103,7 @@ Buka [`assets/expected/expected-results-standard.json`](../assets/expected/expec
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 03 - Azure SQL sebagai sumber](03-azure-sql-source.md)
+**Lanjut ke:** [Lab 03 - Azure SQL sebagai sumber](03-azure-sql-source.md) →
 
 ## Referensi
 

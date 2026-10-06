@@ -107,8 +107,7 @@ FROM stg_df.cost_monthly GROUP BY batch_id, dq_status;
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 06 - ELT Spark ke Silver PPDM-aligned](06-spark-elt-silver.md)
+**Lanjut ke:** [Lab 06 - ELT Spark ke Silver PPDM-aligned](06-spark-elt-silver.md) →
 
 ## Referensi
 

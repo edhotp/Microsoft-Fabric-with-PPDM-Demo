@@ -105,8 +105,7 @@ Ikuti [spesifikasi report](../assets/powerbi/semantic-model-and-report-spec.md#l
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 11 - Fabric IQ ontology](11-ontology.md)
+**Lanjut ke:** [Lab 11 - Fabric IQ ontology](11-ontology.md) →
 
 ## Referensi
 

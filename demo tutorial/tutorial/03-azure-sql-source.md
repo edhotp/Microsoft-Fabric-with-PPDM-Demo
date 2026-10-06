@@ -210,8 +210,7 @@ Untuk pemeriksaan visual, buka **Query editor** database di Azure portal, login 
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 04 - Ingestion Copy ke Bronze](04-copy-ingestion-bronze.md)
+**Lanjut ke:** [Lab 04 - Ingestion Copy ke Bronze](04-copy-ingestion-bronze.md) →
 
 ## Referensi
 

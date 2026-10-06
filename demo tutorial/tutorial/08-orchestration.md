@@ -138,8 +138,7 @@ Buka **Monitor** (Monitoring hub) dan perhatikan riwayat run serta durasi setiap
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 09 - Semantic model Direct Lake](09-semantic-model.md)
+**Lanjut ke:** [Lab 09 - Semantic model Direct Lake](09-semantic-model.md) →
 
 ## Referensi
 

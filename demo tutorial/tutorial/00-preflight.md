@@ -90,8 +90,7 @@ Dalam lab ini Anda akan:
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 01 - Kontrak SSOT dan PPDM alignment](01-ssot-authority-ppdm-alignment.md)
+**Lanjut ke:** [Lab 01 - Kontrak SSOT dan PPDM alignment](01-ssot-authority-ppdm-alignment.md) →
 
 ## Referensi
 

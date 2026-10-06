@@ -115,8 +115,7 @@ Tabel `publication` berdiri sendiri, tanpa relasi, dan dipakai oleh measure bukt
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 10 - Report Power BI](10-power-bi-report.md)
+**Lanjut ke:** [Lab 10 - Report Power BI](10-power-bi-report.md) →
 
 ## Referensi
 

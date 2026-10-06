@@ -124,8 +124,7 @@ SELECT BatchId, Stage, Status, BlockerCount, WarningCount, InfoCount FROM ops.ba
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 07 - Gold Warehouse dan publikasi](07-gold-warehouse-publication.md)
+**Lanjut ke:** [Lab 07 - Gold Warehouse dan publikasi](07-gold-warehouse-publication.md) →
 
 ## Referensi
 

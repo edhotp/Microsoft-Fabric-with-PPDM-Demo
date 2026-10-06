@@ -269,8 +269,7 @@ Dalam kelas mandiri, satu peserta memegang semua peran. Dalam kelompok, peran da
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 00 - Preflight lingkungan](00-preflight.md)
+**Lanjut ke:** [Lab 00 - Preflight lingkungan](00-preflight.md) →
 
 ## Referensi
 

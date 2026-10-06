@@ -124,8 +124,7 @@ flowchart LR
 
 ## Langkah berikutnya
 
-> [!div class="nextstepaction"]
-> [Lab 12 - Fabric data agents](12-data-agents.md)
+**Lanjut ke:** [Lab 12 - Fabric data agents](12-data-agents.md) →
 
 ## Referensi
 
