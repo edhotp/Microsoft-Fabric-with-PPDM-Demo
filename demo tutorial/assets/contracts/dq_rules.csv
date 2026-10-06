@@ -1,0 +1,19 @@
+rule_id,severity,stage,description,gate_effect
+M01,BLOCKER,SILVER_MASTER,Duplicate master key in the registry snapshot,Blocks publication (QUALITY_FAILED)
+M02,BLOCKER,SILVER_MASTER,Master record references a missing parent,Blocks publication (QUALITY_FAILED)
+M03,BLOCKER,SILVER_MASTER,"Working interest is outside (0,1] or periods overlap",Blocks publication (QUALITY_FAILED)
+M04,BLOCKER,SILVER_MASTER,Unit conversion factor must be greater than zero,Blocks publication (QUALITY_FAILED)
+R01,BLOCKER,SILVER_PRODUCTION,Source well reference has no approved alias,Blocks publication (QUALITY_FAILED)
+R02,BLOCKER,SILVER_PRODUCTION,Unit of measure is not registered for the commodity,Blocks publication (QUALITY_FAILED)
+R03,BLOCKER,SILVER_PRODUCTION,Quantity is missing for a non-retraction record,Blocks publication (QUALITY_FAILED)
+R04,BLOCKER,SILVER_PRODUCTION,Quantity is negative,Blocks publication (QUALITY_FAILED)
+R05,BLOCKER,SILVER_PRODUCTION,"Commodity is not Oil, Gas, or Water",Blocks publication (QUALITY_FAILED)
+R06,BLOCKER,SILVER_PRODUCTION,Same observation and revision delivered with different payloads,Blocks publication (QUALITY_FAILED)
+R07,BLOCKER,SILVER_PRODUCTION,Equal-priority authoritative sources disagree,Blocks publication (QUALITY_FAILED)
+R10,INFO,SILVER_PRODUCTION,Duplicate delivery with identical payload was ignored,Recorded as evidence only
+W01,WARNING,SILVER_PRODUCTION,No candidate is eligible under the source authority policy,Recorded as evidence only
+B01,BLOCKER,SILVER_BUSINESS,Dataflow staging output is missing or belongs to another batch,Blocks publication (QUALITY_FAILED)
+B02,BLOCKER,SILVER_BUSINESS,Target staging row failed Dataflow validation,Blocks publication (QUALITY_FAILED)
+B03,BLOCKER,SILVER_BUSINESS,Cost staging row failed Dataflow validation,Blocks publication (QUALITY_FAILED)
+B04,BLOCKER,SILVER_BUSINESS,Downtime event is invalid or references unknown equipment,Blocks publication (QUALITY_FAILED)
+B05,BLOCKER,SILVER_BUSINESS,"Loss allocation references an unknown event, well, or date",Blocks publication (QUALITY_FAILED)

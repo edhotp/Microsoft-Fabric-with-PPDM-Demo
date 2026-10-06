@@ -1,0 +1,533 @@
+{
+  "profile": "small",
+  "authority_policy_version": "SA-2025.1",
+  "mapping_version": "PPDM-ALIGN-1.0",
+  "kpi_contract_version": "KPI-1.0",
+  "fixture": {
+    "incident_id": "INC-MY-001",
+    "affected_wells": 10,
+    "allocation_rows": 40,
+    "lost_oil_bbl": "2000.000000",
+    "lost_gas_mscf": "12000.000000",
+    "lost_boe_gross": "4000.000000",
+    "lost_boe_net_wi": "1600.000000",
+    "value_usd_gross": "177080.0000",
+    "value_usd_net_wi": "70832.0000",
+    "equipment_downtime_hours": "48.000",
+    "affected_well_hours": "480.000",
+    "all_downtime_events": 200,
+    "all_downtime_hours": "922.000"
+  },
+  "publications": {
+    "PUB-B0": {
+      "status": "APPROVAL_PENDING",
+      "blockers": {},
+      "info_and_warnings": {},
+      "decisions": {},
+      "counts": {
+        "fact_production_rows": 1800,
+        "observation_count": 5400,
+        "retracted_count": 0,
+        "complete_rows": 1800
+      },
+      "totals": {
+        "gas_total": "2979715.825930",
+        "gross_boe_total": "957689.410238",
+        "net_wi_boe_total": "382979.967698",
+        "oil_total": "461070.105803",
+        "water_total": "400316.095829"
+      },
+      "by_country": {
+        "DZ": {
+          "gross_boe": "351918.388125",
+          "net_wi_boe": "175959.194203"
+        },
+        "IQ": {
+          "gross_boe": "352876.353573",
+          "net_wi_boe": "105862.906088"
+        },
+        "MY": {
+          "gross_boe": "252894.668540",
+          "net_wi_boe": "101157.867407"
+        }
+      },
+      "s_check_oil_bbl": "284.014547",
+      "target_boe_total": "12468705.155340",
+      "opex_usd_total": "18780956.0000",
+      "publication_id": "PUB-B0",
+      "batch_id": "B0",
+      "parent_batch_id": null,
+      "period_end": "2025-09-30",
+      "master": {
+        "wells": 60,
+        "wellbores": 75,
+        "completions": 90,
+        "reporting_streams": 60,
+        "aliases": 80
+      },
+      "gold_after_approval": "PUB-B0"
+    },
+    "PUB-B1": {
+      "status": "APPROVAL_PENDING",
+      "blockers": {},
+      "info_and_warnings": {},
+      "decisions": {},
+      "counts": {
+        "fact_production_rows": 1860,
+        "observation_count": 5580,
+        "retracted_count": 0,
+        "complete_rows": 1860
+      },
+      "totals": {
+        "gas_total": "3080273.235604",
+        "gross_boe_total": "990008.418683",
+        "net_wi_boe_total": "395897.186244",
+        "oil_total": "476629.545964",
+        "water_total": "413899.961980"
+      },
+      "by_country": {
+        "DZ": {
+          "gross_boe": "363590.899177",
+          "net_wi_boe": "181795.449734"
+        },
+        "IQ": {
+          "gross_boe": "364652.712988",
+          "net_wi_boe": "109395.813914"
+        },
+        "MY": {
+          "gross_boe": "261764.806518",
+          "net_wi_boe": "104705.922596"
+        }
+      },
+      "s_check_oil_bbl": "284.014547",
+      "target_boe_total": "12468705.155340",
+      "opex_usd_total": "18780956.0000",
+      "publication_id": "PUB-B1",
+      "batch_id": "B1",
+      "parent_batch_id": "B0",
+      "period_end": "2025-10-01",
+      "master": {
+        "wells": 60,
+        "wellbores": 75,
+        "completions": 90,
+        "reporting_streams": 60,
+        "aliases": 80
+      },
+      "gold_after_approval": "PUB-B1"
+    },
+    "PUB-C1": {
+      "status": "APPROVAL_PENDING",
+      "blockers": {},
+      "info_and_warnings": {},
+      "decisions": {},
+      "counts": {
+        "fact_production_rows": 1860,
+        "observation_count": 5580,
+        "retracted_count": 0,
+        "complete_rows": 1860
+      },
+      "totals": {
+        "gas_total": "3080353.733612",
+        "gross_boe_total": "990031.651853",
+        "net_wi_boe_total": "395908.802830",
+        "oil_total": "476639.362799",
+        "water_total": "413904.968563"
+      },
+      "by_country": {
+        "DZ": {
+          "gross_boe": "363614.132347",
+          "net_wi_boe": "181807.066320"
+        },
+        "IQ": {
+          "gross_boe": "364652.712988",
+          "net_wi_boe": "109395.813914"
+        },
+        "MY": {
+          "gross_boe": "261764.806518",
+          "net_wi_boe": "104705.922596"
+        }
+      },
+      "s_check_oil_bbl": "284.014547",
+      "target_boe_total": "12468705.155340",
+      "opex_usd_total": "18780956.0000",
+      "publication_id": "PUB-C1",
+      "batch_id": "C1",
+      "parent_batch_id": "B1",
+      "period_end": "2025-10-01",
+      "master": {
+        "wells": 60,
+        "wellbores": 75,
+        "completions": 90,
+        "reporting_streams": 60,
+        "aliases": 80
+      },
+      "gold_after_approval": "PUB-C1"
+    },
+    "PUB-D1": {
+      "status": "APPROVAL_PENDING",
+      "blockers": {},
+      "info_and_warnings": {
+        "R10": 100
+      },
+      "decisions": {},
+      "counts": {
+        "fact_production_rows": 1860,
+        "observation_count": 5580,
+        "retracted_count": 0,
+        "complete_rows": 1860
+      },
+      "totals": {
+        "gas_total": "3080353.733612",
+        "gross_boe_total": "990031.651853",
+        "net_wi_boe_total": "395908.802830",
+        "oil_total": "476639.362799",
+        "water_total": "413904.968563"
+      },
+      "by_country": {
+        "DZ": {
+          "gross_boe": "363614.132347",
+          "net_wi_boe": "181807.066320"
+        },
+        "IQ": {
+          "gross_boe": "364652.712988",
+          "net_wi_boe": "109395.813914"
+        },
+        "MY": {
+          "gross_boe": "261764.806518",
+          "net_wi_boe": "104705.922596"
+        }
+      },
+      "s_check_oil_bbl": "284.014547",
+      "target_boe_total": "12468705.155340",
+      "opex_usd_total": "18780956.0000",
+      "publication_id": "PUB-D1",
+      "batch_id": "D1",
+      "parent_batch_id": "C1",
+      "period_end": "2025-10-01",
+      "master": {
+        "wells": 60,
+        "wellbores": 75,
+        "completions": 90,
+        "reporting_streams": 60,
+        "aliases": 80
+      },
+      "gold_after_approval": "PUB-D1"
+    },
+    "PUB-H1": {
+      "status": "APPROVAL_PENDING",
+      "blockers": {},
+      "info_and_warnings": {
+        "R10": 100
+      },
+      "decisions": {},
+      "counts": {
+        "fact_production_rows": 1860,
+        "observation_count": 5580,
+        "retracted_count": 0,
+        "complete_rows": 1860
+      },
+      "totals": {
+        "gas_total": "3080353.733612",
+        "gross_boe_total": "990031.651853",
+        "net_wi_boe_total": "369192.069152",
+        "oil_total": "476639.362799",
+        "water_total": "413904.968563"
+      },
+      "by_country": {
+        "DZ": {
+          "gross_boe": "363614.132347",
+          "net_wi_boe": "155090.332642"
+        },
+        "IQ": {
+          "gross_boe": "364652.712988",
+          "net_wi_boe": "109395.813914"
+        },
+        "MY": {
+          "gross_boe": "261764.806518",
+          "net_wi_boe": "104705.922596"
+        }
+      },
+      "s_check_oil_bbl": "284.014547",
+      "target_boe_total": "12468705.155340",
+      "opex_usd_total": "18780956.0000",
+      "publication_id": "PUB-H1",
+      "batch_id": "H1",
+      "parent_batch_id": "D1",
+      "period_end": "2025-10-01",
+      "master": {
+        "wells": 60,
+        "wellbores": 75,
+        "completions": 90,
+        "reporting_streams": 60,
+        "aliases": 80
+      },
+      "gold_after_approval": "PUB-H1"
+    },
+    "PUB-X1": {
+      "status": "APPROVAL_PENDING",
+      "blockers": {},
+      "info_and_warnings": {
+        "R10": 100
+      },
+      "decisions": {},
+      "counts": {
+        "fact_production_rows": 1860,
+        "observation_count": 5577,
+        "retracted_count": 3,
+        "complete_rows": 1857
+      },
+      "totals": {
+        "gas_total": "3080353.733612",
+        "gross_boe_total": "989140.151756",
+        "net_wi_boe_total": "368835.469113",
+        "oil_total": "475747.862702",
+        "water_total": "413904.968563"
+      },
+      "by_country": {
+        "DZ": {
+          "gross_boe": "363614.132347",
+          "net_wi_boe": "155090.332642"
+        },
+        "IQ": {
+          "gross_boe": "364652.712988",
+          "net_wi_boe": "109395.813914"
+        },
+        "MY": {
+          "gross_boe": "260873.306421",
+          "net_wi_boe": "104349.322557"
+        }
+      },
+      "s_check_oil_bbl": "284.014547",
+      "target_boe_total": "12468705.155340",
+      "opex_usd_total": "18780956.0000",
+      "publication_id": "PUB-X1",
+      "batch_id": "X1",
+      "parent_batch_id": "H1",
+      "period_end": "2025-10-01",
+      "master": {
+        "wells": 60,
+        "wellbores": 75,
+        "completions": 90,
+        "reporting_streams": 60,
+        "aliases": 80
+      },
+      "gold_after_approval": "PUB-X1"
+    },
+    "PUB-Q1": {
+      "status": "QUALITY_FAILED",
+      "blockers": {
+        "R01": 10,
+        "R02": 20,
+        "R03": 5
+      },
+      "info_and_warnings": {
+        "R10": 100
+      },
+      "decisions": {},
+      "counts": {
+        "fact_production_rows": 1860,
+        "observation_count": 5542,
+        "retracted_count": 3,
+        "complete_rows": 1845
+      },
+      "totals": {
+        "gas_total": "3058900.593971",
+        "gross_boe_total": "981800.919773",
+        "net_wi_boe_total": "366633.699515",
+        "oil_total": "471984.153993",
+        "water_total": "410216.288583"
+      },
+      "by_country": {
+        "DZ": {
+          "gross_boe": "363614.132347",
+          "net_wi_boe": "155090.332642"
+        },
+        "IQ": {
+          "gross_boe": "357313.481005",
+          "net_wi_boe": "107194.044316"
+        },
+        "MY": {
+          "gross_boe": "260873.306421",
+          "net_wi_boe": "104349.322557"
+        }
+      },
+      "s_check_oil_bbl": "284.014547",
+      "target_boe_total": "12468705.155340",
+      "opex_usd_total": "18780956.0000",
+      "publication_id": "PUB-Q1",
+      "batch_id": "Q1",
+      "parent_batch_id": "X1",
+      "period_end": "2025-10-01",
+      "master": {
+        "wells": 60,
+        "wellbores": 75,
+        "completions": 90,
+        "reporting_streams": 60,
+        "aliases": 80
+      },
+      "gold_after_approval": "PUB-X1"
+    },
+    "PUB-Q2": {
+      "status": "APPROVAL_PENDING",
+      "blockers": {},
+      "info_and_warnings": {
+        "R10": 100
+      },
+      "decisions": {},
+      "counts": {
+        "fact_production_rows": 1860,
+        "observation_count": 5577,
+        "retracted_count": 3,
+        "complete_rows": 1857
+      },
+      "totals": {
+        "gas_total": "3080353.733612",
+        "gross_boe_total": "989140.151756",
+        "net_wi_boe_total": "368835.469113",
+        "oil_total": "475747.862702",
+        "water_total": "413904.968563"
+      },
+      "by_country": {
+        "DZ": {
+          "gross_boe": "363614.132347",
+          "net_wi_boe": "155090.332642"
+        },
+        "IQ": {
+          "gross_boe": "364652.712988",
+          "net_wi_boe": "109395.813914"
+        },
+        "MY": {
+          "gross_boe": "260873.306421",
+          "net_wi_boe": "104349.322557"
+        }
+      },
+      "s_check_oil_bbl": "284.014547",
+      "target_boe_total": "12468705.155340",
+      "opex_usd_total": "18780956.0000",
+      "publication_id": "PUB-Q2",
+      "batch_id": "Q2",
+      "parent_batch_id": "Q1",
+      "period_end": "2025-10-01",
+      "master": {
+        "wells": 60,
+        "wellbores": 75,
+        "completions": 90,
+        "reporting_streams": 60,
+        "aliases": 80
+      },
+      "gold_after_approval": "PUB-Q2"
+    },
+    "PUB-S1": {
+      "status": "APPROVAL_PENDING",
+      "blockers": {},
+      "info_and_warnings": {
+        "R10": 100
+      },
+      "decisions": {
+        "SELECTED": 1
+      },
+      "counts": {
+        "fact_production_rows": 1860,
+        "observation_count": 5577,
+        "retracted_count": 3,
+        "complete_rows": 1857
+      },
+      "totals": {
+        "gas_total": "3080353.733612",
+        "gross_boe_total": "989140.151756",
+        "net_wi_boe_total": "368835.469113",
+        "oil_total": "475747.862702",
+        "water_total": "413904.968563"
+      },
+      "by_country": {
+        "DZ": {
+          "gross_boe": "363614.132347",
+          "net_wi_boe": "155090.332642"
+        },
+        "IQ": {
+          "gross_boe": "364652.712988",
+          "net_wi_boe": "109395.813914"
+        },
+        "MY": {
+          "gross_boe": "260873.306421",
+          "net_wi_boe": "104349.322557"
+        }
+      },
+      "s_check_oil_bbl": "284.014547",
+      "target_boe_total": "12468705.155340",
+      "opex_usd_total": "18780956.0000",
+      "publication_id": "PUB-S1",
+      "batch_id": "S1",
+      "parent_batch_id": "Q2",
+      "period_end": "2025-10-01",
+      "master": {
+        "wells": 60,
+        "wellbores": 75,
+        "completions": 90,
+        "reporting_streams": 60,
+        "aliases": 80
+      },
+      "gold_after_approval": "PUB-S1"
+    },
+    "PUB-S2": {
+      "status": "APPROVAL_PENDING",
+      "blockers": {},
+      "info_and_warnings": {
+        "R10": 100
+      },
+      "decisions": {
+        "SELECTED": 1
+      },
+      "counts": {
+        "fact_production_rows": 1860,
+        "observation_count": 5577,
+        "retracted_count": 3,
+        "complete_rows": 1857
+      },
+      "totals": {
+        "gas_total": "3080353.733612",
+        "gross_boe_total": "989145.151756",
+        "net_wi_boe_total": "368837.469113",
+        "oil_total": "475752.862702",
+        "water_total": "413904.968563"
+      },
+      "by_country": {
+        "DZ": {
+          "gross_boe": "363614.132347",
+          "net_wi_boe": "155090.332642"
+        },
+        "IQ": {
+          "gross_boe": "364652.712988",
+          "net_wi_boe": "109395.813914"
+        },
+        "MY": {
+          "gross_boe": "260878.306421",
+          "net_wi_boe": "104351.322557"
+        }
+      },
+      "s_check_oil_bbl": "289.014547",
+      "target_boe_total": "12468705.155340",
+      "opex_usd_total": "18780956.0000",
+      "publication_id": "PUB-S2",
+      "batch_id": "S2",
+      "parent_batch_id": "S1",
+      "period_end": "2025-10-01",
+      "master": {
+        "wells": 60,
+        "wellbores": 75,
+        "completions": 90,
+        "reporting_streams": 60,
+        "aliases": 80
+      },
+      "gold_after_approval": "PUB-S2"
+    }
+  },
+  "ssot_checks": {
+    "s1_selected_oil_bbl": "284.014547",
+    "s1_provisional_oil_bbl": "294.014547",
+    "s2_selected_oil_bbl": "289.014547",
+    "s2_gross_boe_delta": "5.000000",
+    "s2_net_wi_boe_delta": "2.000000",
+    "s2_gross_total_delta": "5.000000"
+  }
+}

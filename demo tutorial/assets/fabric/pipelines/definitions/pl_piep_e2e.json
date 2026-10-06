@@ -1,0 +1,680 @@
+{
+ "properties": {
+  "activities": [
+   {
+    "name": "lkp_sealed_batch",
+    "type": "Lookup",
+    "dependsOn": [],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "source": {
+      "type": "AzureSqlSource",
+      "sqlReaderQuery": {
+       "value": "@concat('SELECT batch_id, period_end, content_sha256 FROM ctl.source_batch WHERE state = ''SEALED'' AND batch_id = ''', pipeline().parameters.p_batch_id, '''')",
+       "type": "Expression"
+      },
+      "queryTimeout": "02:00:00",
+      "partitionOption": "None"
+     },
+     "firstRowOnly": true,
+     "datasetSettings": {
+      "annotations": [],
+      "type": "AzureSqlTable",
+      "schema": [],
+      "typeProperties": {
+       "database": "sqldb_piep_source_demo"
+      },
+      "externalReferences": {
+       "connection": "<sql_connection>"
+      }
+     }
+    }
+   },
+   {
+    "name": "if_batch_sealed",
+    "type": "IfCondition",
+    "dependsOn": [
+     {
+      "activity": "lkp_sealed_batch",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "typeProperties": {
+     "expression": {
+      "value": "@contains(activity('lkp_sealed_batch').output, 'firstRow')",
+      "type": "Expression"
+     },
+     "ifTrueActivities": [],
+     "ifFalseActivities": [
+      {
+       "name": "fail_batch_not_sealed",
+       "type": "Fail",
+       "dependsOn": [],
+       "typeProperties": {
+        "message": {
+         "value": "@concat('Batch ', pipeline().parameters.p_batch_id, ' is not SEALED in ctl.source_batch. Load it with python -m workshop load first.')",
+         "type": "Expression"
+        },
+        "errorCode": "BATCH_NOT_SEALED"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "name": "lkp_entities",
+    "type": "Lookup",
+    "dependsOn": [
+     {
+      "activity": "if_batch_sealed",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "source": {
+      "type": "AzureSqlSource",
+      "sqlReaderQuery": "SELECT entity_name, source_schema, source_table FROM ctl.entity_config WHERE enabled = 1 ORDER BY ordinal",
+      "queryTimeout": "02:00:00",
+      "partitionOption": "None"
+     },
+     "firstRowOnly": false,
+     "datasetSettings": {
+      "annotations": [],
+      "type": "AzureSqlTable",
+      "schema": [],
+      "typeProperties": {
+       "database": "sqldb_piep_source_demo"
+      },
+      "externalReferences": {
+       "connection": "<sql_connection>"
+      }
+     }
+    }
+   },
+   {
+    "name": "fe_copy_entities",
+    "type": "ForEach",
+    "dependsOn": [
+     {
+      "activity": "lkp_entities",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "typeProperties": {
+     "items": {
+      "value": "@activity('lkp_entities').output.value",
+      "type": "Expression"
+     },
+     "isSequential": false,
+     "batchCount": 8,
+     "activities": [
+      {
+       "name": "cp_entity_to_landing",
+       "type": "Copy",
+       "dependsOn": [],
+       "policy": {
+        "timeout": "0.12:00:00",
+        "retry": 1,
+        "retryIntervalInSeconds": 30,
+        "secureOutput": false,
+        "secureInput": false
+       },
+       "typeProperties": {
+        "source": {
+         "type": "AzureSqlSource",
+         "sqlReaderQuery": {
+          "value": "@concat('SELECT * FROM [', item().source_schema, '].[', item().source_table, '] WHERE batch_id = ''', pipeline().parameters.p_batch_id, '''')",
+          "type": "Expression"
+         },
+         "queryTimeout": "02:00:00",
+         "partitionOption": "None",
+         "datasetSettings": {
+          "annotations": [],
+          "type": "AzureSqlTable",
+          "schema": [],
+          "typeProperties": {
+           "database": "sqldb_piep_source_demo"
+          },
+          "externalReferences": {
+           "connection": "<sql_connection>"
+          }
+         }
+        },
+        "sink": {
+         "type": "ParquetSink",
+         "storeSettings": {
+          "type": "LakehouseWriteSettings"
+         },
+         "formatSettings": {
+          "type": "ParquetWriteSettings"
+         },
+         "datasetSettings": {
+          "annotations": [],
+          "linkedService": {
+           "name": "lh_piep_core",
+           "properties": {
+            "annotations": [],
+            "type": "Lakehouse",
+            "typeProperties": {
+             "workspaceId": "<core_workspace>",
+             "artifactId": "<lakehouse>",
+             "rootFolder": "Files"
+            }
+           }
+          },
+          "type": "Parquet",
+          "typeProperties": {
+           "location": {
+            "type": "LakehouseLocation",
+            "folderPath": {
+             "value": "@concat('landing/', pipeline().parameters.p_batch_id, '/', item().entity_name)",
+             "type": "Expression"
+            },
+            "fileName": {
+             "value": "@concat(item().entity_name, '.parquet')",
+             "type": "Expression"
+            }
+           },
+           "compressionCodec": "snappy"
+          },
+          "schema": []
+         }
+        },
+        "enableStaging": false,
+        "translator": {
+         "type": "TabularTranslator",
+         "typeConversion": true,
+         "typeConversionSettings": {
+          "allowDataTruncation": true,
+          "treatBooleanAsNumber": false
+         }
+        }
+       }
+      }
+     ]
+    }
+   },
+   {
+    "name": "nb_01_land_bronze",
+    "type": "TridentNotebook",
+    "dependsOn": [
+     {
+      "activity": "fe_copy_entities",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "notebookId": "<notebook:nb_01_land_bronze>",
+     "workspaceId": "<core_workspace>",
+     "parameters": {
+      "p_batch_id": {
+       "value": {
+        "value": "@pipeline().parameters.p_batch_id",
+        "type": "Expression"
+       },
+       "type": "string"
+      },
+      "p_run_id": {
+       "value": {
+        "value": "@pipeline().RunId",
+        "type": "Expression"
+       },
+       "type": "string"
+      }
+     }
+    }
+   },
+   {
+    "name": "nb_02_conform_master_ppdm",
+    "type": "TridentNotebook",
+    "dependsOn": [
+     {
+      "activity": "nb_01_land_bronze",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "notebookId": "<notebook:nb_02_conform_master_ppdm>",
+     "workspaceId": "<core_workspace>",
+     "parameters": {
+      "p_batch_id": {
+       "value": {
+        "value": "@pipeline().parameters.p_batch_id",
+        "type": "Expression"
+       },
+       "type": "string"
+      },
+      "p_run_id": {
+       "value": {
+        "value": "@pipeline().RunId",
+        "type": "Expression"
+       },
+       "type": "string"
+      },
+      "p_fail_after_bronze": {
+       "value": {
+        "value": "@pipeline().parameters.p_fail_after_bronze",
+        "type": "Expression"
+       },
+       "type": "string"
+      }
+     }
+    }
+   },
+   {
+    "name": "nb_03_conform_production",
+    "type": "TridentNotebook",
+    "dependsOn": [
+     {
+      "activity": "nb_02_conform_master_ppdm",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "notebookId": "<notebook:nb_03_conform_production>",
+     "workspaceId": "<core_workspace>",
+     "parameters": {
+      "p_batch_id": {
+       "value": {
+        "value": "@pipeline().parameters.p_batch_id",
+        "type": "Expression"
+       },
+       "type": "string"
+      },
+      "p_run_id": {
+       "value": {
+        "value": "@pipeline().RunId",
+        "type": "Expression"
+       },
+       "type": "string"
+      }
+     }
+    }
+   },
+   {
+    "name": "df_piep_target_etl",
+    "type": "RefreshDataflow",
+    "dependsOn": [
+     {
+      "activity": "nb_01_land_bronze",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "dataflowId": "<dataflow:df_piep_target_etl>",
+     "workspaceId": "<core_workspace>",
+     "notifyOption": "NoNotification",
+     "dataflowType": "DataflowFabric",
+     "parameters": {
+      "pBatchId": {
+       "value": {
+        "value": "@pipeline().parameters.p_batch_id",
+        "type": "Expression"
+       },
+       "type": "string"
+      }
+     }
+    }
+   },
+   {
+    "name": "df_piep_cost_etl",
+    "type": "RefreshDataflow",
+    "dependsOn": [
+     {
+      "activity": "nb_01_land_bronze",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "dataflowId": "<dataflow:df_piep_cost_etl>",
+     "workspaceId": "<core_workspace>",
+     "notifyOption": "NoNotification",
+     "dataflowType": "DataflowFabric",
+     "parameters": {
+      "pBatchId": {
+       "value": {
+        "value": "@pipeline().parameters.p_batch_id",
+        "type": "Expression"
+       },
+       "type": "string"
+      }
+     }
+    }
+   },
+   {
+    "name": "nb_04_conform_business",
+    "type": "TridentNotebook",
+    "dependsOn": [
+     {
+      "activity": "nb_03_conform_production",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     },
+     {
+      "activity": "df_piep_target_etl",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     },
+     {
+      "activity": "df_piep_cost_etl",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "notebookId": "<notebook:nb_04_conform_business>",
+     "workspaceId": "<core_workspace>",
+     "parameters": {
+      "p_batch_id": {
+       "value": {
+        "value": "@pipeline().parameters.p_batch_id",
+        "type": "Expression"
+       },
+       "type": "string"
+      },
+      "p_run_id": {
+       "value": {
+        "value": "@pipeline().RunId",
+        "type": "Expression"
+       },
+       "type": "string"
+      }
+     }
+    }
+   },
+   {
+    "name": "nb_05_validate_and_serve",
+    "type": "TridentNotebook",
+    "dependsOn": [
+     {
+      "activity": "nb_04_conform_business",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "notebookId": "<notebook:nb_05_validate_and_serve>",
+     "workspaceId": "<core_workspace>",
+     "parameters": {
+      "p_batch_id": {
+       "value": {
+        "value": "@pipeline().parameters.p_batch_id",
+        "type": "Expression"
+       },
+       "type": "string"
+      },
+      "p_run_id": {
+       "value": {
+        "value": "@pipeline().RunId",
+        "type": "Expression"
+       },
+       "type": "string"
+      }
+     }
+    }
+   },
+   {
+    "name": "sp_stage_candidate",
+    "type": "SqlServerStoredProcedure",
+    "dependsOn": [
+     {
+      "activity": "nb_05_validate_and_serve",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 3,
+     "retryIntervalInSeconds": 120,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "linkedService": {
+     "name": "wh_piep_gold",
+     "properties": {
+      "annotations": [],
+      "type": "DataWarehouse",
+      "typeProperties": {
+       "endpoint": "<warehouse_endpoint>",
+       "artifactId": "<warehouse>",
+       "workspaceId": "<core_workspace>"
+      }
+     }
+    },
+    "typeProperties": {
+     "storedProcedureName": "[ops].[usp_stage_candidate]",
+     "storedProcedureParameters": {
+      "PublicationId": {
+       "value": {
+        "value": "@concat('PUB-', pipeline().parameters.p_batch_id)",
+        "type": "Expression"
+       },
+       "type": "String"
+      },
+      "RunId": {
+       "value": {
+        "value": "@pipeline().RunId",
+        "type": "Expression"
+       },
+       "type": "String"
+      }
+     }
+    }
+   },
+   {
+    "name": "sp_sync_quality_evidence_ok",
+    "type": "SqlServerStoredProcedure",
+    "dependsOn": [
+     {
+      "activity": "sp_stage_candidate",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "linkedService": {
+     "name": "wh_piep_gold",
+     "properties": {
+      "annotations": [],
+      "type": "DataWarehouse",
+      "typeProperties": {
+       "endpoint": "<warehouse_endpoint>",
+       "artifactId": "<warehouse>",
+       "workspaceId": "<core_workspace>"
+      }
+     }
+    },
+    "typeProperties": {
+     "storedProcedureName": "[ops].[usp_sync_quality_evidence]",
+     "storedProcedureParameters": {
+      "BatchId": {
+       "value": {
+        "value": "@pipeline().parameters.p_batch_id",
+        "type": "Expression"
+       },
+       "type": "String"
+      },
+      "RunId": {
+       "value": {
+        "value": "@pipeline().RunId",
+        "type": "Expression"
+       },
+       "type": "String"
+      }
+     }
+    }
+   },
+   {
+    "name": "sp_sync_quality_evidence_fail",
+    "type": "SqlServerStoredProcedure",
+    "dependsOn": [
+     {
+      "activity": "nb_05_validate_and_serve",
+      "dependencyConditions": [
+       "Failed"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "linkedService": {
+     "name": "wh_piep_gold",
+     "properties": {
+      "annotations": [],
+      "type": "DataWarehouse",
+      "typeProperties": {
+       "endpoint": "<warehouse_endpoint>",
+       "artifactId": "<warehouse>",
+       "workspaceId": "<core_workspace>"
+      }
+     }
+    },
+    "typeProperties": {
+     "storedProcedureName": "[ops].[usp_sync_quality_evidence]",
+     "storedProcedureParameters": {
+      "BatchId": {
+       "value": {
+        "value": "@pipeline().parameters.p_batch_id",
+        "type": "Expression"
+       },
+       "type": "String"
+      },
+      "RunId": {
+       "value": {
+        "value": "@pipeline().RunId",
+        "type": "Expression"
+       },
+       "type": "String"
+      }
+     }
+    }
+   },
+   {
+    "name": "fail_quality_gate",
+    "type": "Fail",
+    "dependsOn": [
+     {
+      "activity": "sp_sync_quality_evidence_fail",
+      "dependencyConditions": [
+       "Completed"
+      ]
+     }
+    ],
+    "typeProperties": {
+     "message": {
+      "value": "@concat('Batch ', pipeline().parameters.p_batch_id, ' failed the SSOT quality gate. Gold is unchanged. Check ops.quality_evidence and ops.dq_issue_summary in wh_piep_gold.')",
+      "type": "Expression"
+     },
+     "errorCode": "QUALITY_GATE"
+    }
+   }
+  ],
+  "parameters": {
+   "p_batch_id": {
+    "type": "string",
+    "defaultValue": "B0"
+   },
+   "p_fail_after_bronze": {
+    "type": "string",
+    "defaultValue": "false"
+   }
+  },
+  "variables": {}
+ }
+}

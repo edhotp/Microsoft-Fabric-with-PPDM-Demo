@@ -1,0 +1,53 @@
+// PIEP SSOT - query validasi DAX (jalankan di DAX query view setelah measure ditambahkan).
+// Bandingkan dengan assets/expected/expected-results-standard.json dan assets/sql/warehouse/04_validate_gold.sql.
+// Angka di semantic model, Warehouse, dan data agent HARUS sama untuk publikasi yang sama.
+
+// 1. Publikasi aktif dan total kontrol
+EVALUATE
+ROW (
+    "Publication", [Current Publication],
+    "Approved by", [Approved By],
+    "Gold consistency", [Gold Matches Publication],
+    "Gross BOE", [Gross BOE],
+    "Net WI BOE", [Net WI BOE],
+    "Data completeness %", [Data Completeness %]
+)
+
+// 2. Per negara
+EVALUATE
+SUMMARIZECOLUMNS (
+    'dim_asset'[CountryName],
+    "Gross BOE", [Gross BOE],
+    "Net WI BOE", [Net WI BOE],
+    "Target BOE", [Target BOE],
+    "Target Achievement %", [Target Achievement %]
+)
+ORDER BY 'dim_asset'[CountryName]
+
+// 3. Fixture insiden INC-MY-001 (expected: 10 sumur, 4,000 BOE gross, 1,600 BOE net WI)
+EVALUATE
+CALCULATETABLE (
+    ROW (
+        "Affected wells", [Affected Wells],
+        "Lost BOE gross", [Lost BOE Gross],
+        "Lost BOE net WI", [Lost BOE Net WI],
+        "Loss value USD gross", [Loss Value USD Gross],
+        "Downtime hours", [Downtime Hours]
+    ),
+    'dim_incident'[IncidentId] = "INC-MY-001"
+)
+
+// 4. Keputusan otoritas sumber untuk sumur MY_B_W001 (S1/S2)
+EVALUATE
+CALCULATETABLE (
+    SELECTCOLUMNS (
+        'source_decision',
+        "Date", 'source_decision'[BusinessDate],
+        "Commodity", 'source_decision'[Commodity],
+        "Status", 'source_decision'[DecisionStatus],
+        "Selected source", 'source_decision'[SelectedSourceSystem],
+        "Value", 'source_decision'[SelectedValueStd],
+        "Reason", 'source_decision'[Reason]
+    ),
+    'dim_well'[WellId] = "MY_B_W001"
+)

@@ -1,0 +1,20 @@
+silver_table,source_table,ppdm_concept,alignment_status,mapping_version
+silver.country,ref.country,Area / country,ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.business_associate,ref.business_associate,Business associate (operator),ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.field,ref.field,Field / area,ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.facility,ref.facility,Facility,ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.equipment,ref.equipment,Equipment,ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.well,ref.well,Well (What Is A Well? definition),ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.wellbore,ref.wellbore,Wellbore,ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.well_completion,ref.well_completion,Wellbore completion,ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.reporting_stream,ref.reporting_stream,Well reporting stream,ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.well_alias,ref.well_alias,Well identifier crosswalk,ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.uom_conversion,ref.uom_conversion,Unit of measure reference,ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.production_observation,src_*.production,Production volume per reporting stream,ALIGNED_TO_PUBLIC_CONCEPT,PPDM-ALIGN-1.0
+silver.equipment_downtime_event,src_my.downtime_event,Equipment downtime event,REQUIRES_DOMAIN_VALIDATION,PPDM-ALIGN-1.0
+silver_ext.working_interest,ref.working_interest,"Working interest (simplified, not entitlement)",DEMO_EXTENSION,PPDM-ALIGN-1.0
+silver_ext.source_authority,ref.source_authority,SSOT source authority policy,DEMO_EXTENSION,PPDM-ALIGN-1.0
+silver_ext.target_daily,ref.target_monthly,RKAP target allocated to days,DEMO_EXTENSION,PPDM-ALIGN-1.0
+silver_ext.operating_cost_monthly,ref.operating_cost,Operating cost after FX,DEMO_EXTENSION,PPDM-ALIGN-1.0
+silver_ext.loss_allocation,src_my.loss_allocation,Approved production loss allocation,DEMO_EXTENSION,PPDM-ALIGN-1.0
+silver_ext.price,ref.price,Indicative price deck,DEMO_EXTENSION,PPDM-ALIGN-1.0

@@ -1,0 +1,13 @@
+relationship_type,origin_entity_type,origin_property,target_entity_type,target_property,question_it_enables
+locatedIn,Asset,country_id,Country,country_id,Which assets are in Malaysia?
+partOf,Facility,asset_id,Asset,asset_id,Which facility serves this field?
+installedAt,Equipment,facility_id,Facility,facility_id,Which equipment is installed at facility FAC_MY_A?
+belongsTo,Well,asset_id,Asset,asset_id,Which wells belong to field MY_A?
+drilledFrom,Wellbore,well_id,Well,well_id,How many wellbores does a well have?
+completes,Completion,wellbore_id,Wellbore,wellbore_id,Which completions are on this wellbore?
+reportsFor,ReportingStream,well_id,Well,well_id,Which reporting stream carries this well's volumes?
+measures,ProductionDay,stream_id,ReportingStream,stream_id,What did this stream produce on a date?
+occurredOn,Incident,equipment_id,Equipment,equipment_id,Which equipment caused incident INC-MY-001?
+causedBy,LossAllocation,incident_id,Incident,incident_id,How much production did INC-MY-001 cost?
+affects,LossAllocation,well_id,Well,well_id,Which wells lost production because of INC-MY-001?
+decides,SourceDecision,stream_id,ReportingStream,stream_id,Why was this value selected for well MY_B_W001?

@@ -1,0 +1,68 @@
+// PIEP SSOT - measure semantic model sm_piep_performance (Direct Lake di atas wh_piep_gold, schema gold)
+// Cara pakai: buka semantic model > Open data model > DAX query view, tempel seluruh isi file,
+// klik "Update model with changes" untuk menambahkan semua measure, lalu set format di Properties.
+// Definisi mengikuti assets/contracts/kpi_contract.csv (KPI-1.0).
+DEFINE
+    // KPI-01 / KPI-02 produksi
+    MEASURE 'fact_production_daily'[Gross BOE] = SUM ( 'fact_production_daily'[GrossBoe] )
+    MEASURE 'fact_production_daily'[Net WI BOE] = SUM ( 'fact_production_daily'[NetWiBoe] )
+    MEASURE 'fact_production_daily'[Oil bbl] = SUM ( 'fact_production_daily'[OilBbl] )
+    MEASURE 'fact_production_daily'[Gas Mscf] = SUM ( 'fact_production_daily'[GasMscf] )
+    MEASURE 'fact_production_daily'[Water bbl] = SUM ( 'fact_production_daily'[WaterBbl] )
+    MEASURE 'fact_production_daily'[Avg Gross BOE per Day] =
+        DIVIDE ( [Gross BOE], DISTINCTCOUNT ( 'fact_production_daily'[DateKey] ) )
+    MEASURE 'fact_production_daily'[Water Cut %] =
+        DIVIDE ( [Water bbl], [Oil bbl] + [Water bbl] )
+
+    // KPI-03 target
+    MEASURE 'fact_target_daily'[Target BOE] = SUM ( 'fact_target_daily'[TargetBoe] )
+    MEASURE 'fact_target_daily'[Target Achievement %] = DIVIDE ( [Gross BOE], [Target BOE] )
+    MEASURE 'fact_target_daily'[Variance to Target BOE] = [Gross BOE] - [Target BOE]
+
+    // KPI-04 kelengkapan data (trust)
+    MEASURE 'fact_production_daily'[Stream Days] = COUNTROWS ( 'fact_production_daily' )
+    MEASURE 'fact_production_daily'[Complete Stream Days] = SUM ( 'fact_production_daily'[IsComplete] )
+    MEASURE 'fact_production_daily'[Data Completeness %] = DIVIDE ( [Complete Stream Days], [Stream Days] )
+    MEASURE 'fact_production_daily'[Retracted Observations] = SUM ( 'fact_production_daily'[RetractedCount] )
+
+    // KPI-05 / KPI-07 operasi
+    MEASURE 'fact_loss_allocation'[Lost BOE Gross] = SUM ( 'fact_loss_allocation'[LostBoeGross] )
+    MEASURE 'fact_loss_allocation'[Lost BOE Net WI] = SUM ( 'fact_loss_allocation'[LostBoeNetWi] )
+    MEASURE 'fact_loss_allocation'[Loss Value USD Gross] = SUM ( 'fact_loss_allocation'[ValueUsdGross] )
+    MEASURE 'fact_loss_allocation'[Loss Value USD Net WI] = SUM ( 'fact_loss_allocation'[ValueUsdNetWi] )
+    MEASURE 'fact_loss_allocation'[Affected Wells] = DISTINCTCOUNT ( 'fact_loss_allocation'[WellKey] )
+    MEASURE 'fact_downtime_event'[Downtime Hours] = SUM ( 'fact_downtime_event'[DurationHours] )
+    MEASURE 'fact_downtime_event'[Downtime Events] = COUNTROWS ( 'fact_downtime_event' )
+
+    // KPI-06 biaya
+    MEASURE 'fact_operating_cost_monthly'[Opex USD] = SUM ( 'fact_operating_cost_monthly'[AmountUsd] )
+    MEASURE 'fact_operating_cost_monthly'[Opex per BOE USD] = DIVIDE ( [Opex USD], [Gross BOE] )
+
+    // Bukti SSOT: publikasi, approval, keputusan sumber
+    MEASURE 'publication'[Current Publication] =
+        CALCULATE ( MAX ( 'publication'[PublicationId] ), 'publication'[Status] = "PUBLISHED" )
+    MEASURE 'publication'[Approved By] =
+        CALCULATE ( MAX ( 'publication'[DecidedBy] ), 'publication'[Status] = "PUBLISHED" )
+    MEASURE 'publication'[Published At UTC] =
+        CALCULATE ( MAX ( 'publication'[PublishedAtUtc] ), 'publication'[Status] = "PUBLISHED" )
+    MEASURE 'publication'[Trust Banner] =
+        "SSOT " & [Current Publication] & " | approved by " & [Approved By] & " | published "
+            & FORMAT ( [Published At UTC], "yyyy-mm-dd hh:nn" ) & " UTC"
+    MEASURE 'publication'[Gold Matches Publication] =
+        IF (
+            MAX ( 'fact_production_daily'[PublicationId] ) = [Current Publication],
+            "Consistent",
+            "Check refresh"
+        )
+    MEASURE 'source_decision'[Source Decisions] = COUNTROWS ( 'source_decision' )
+    MEASURE 'source_decision'[Decisions Needing Review] =
+        CALCULATE ( COUNTROWS ( 'source_decision' ), 'source_decision'[DecisionStatus] <> "SELECTED" )
+
+EVALUATE
+SUMMARIZECOLUMNS (
+    'dim_asset'[CountryName],
+    "Gross BOE", [Gross BOE],
+    "Net WI BOE", [Net WI BOE],
+    "Target Achievement %", [Target Achievement %],
+    "Data Completeness %", [Data Completeness %]
+)

@@ -1,0 +1,8 @@
+product_id,product_name,owner_domain,silver_source,gold_object,refresh_rule,consumers
+DP-01,Golden well master,Data Management,silver.well + wellbore + completion + alias,"gold.dim_well, gold.master_wellbore, gold.master_completion",Per publication,"Power BI, ontology, data agent"
+DP-02,Daily production (authoritative),Production Reporting,silver.production_observation,gold.fact_production_daily,Per approved publication,"Power BI, data agent"
+DP-03,Source decision evidence,Data Management,ops.source_decision,gold.source_decision,Per approved publication,"Power BI (audit page), ontology, data agent"
+DP-04,RKAP target daily,Planning,silver_ext.target_daily (Dataflow Gen2 ETL),gold.fact_target_daily,Per approved publication,Power BI
+DP-05,Operating cost USD,Finance,silver_ext.operating_cost_monthly (Dataflow Gen2 ETL),gold.fact_operating_cost_monthly,Per approved publication,Power BI
+DP-06,Downtime and production loss,Operations,"silver.equipment_downtime_event, silver_ext.loss_allocation","gold.fact_downtime_event, gold.fact_loss_allocation",Per approved publication,"Power BI, ontology, data agent"
+DP-07,Publication manifest,Data Governance,serve.publication_candidate,"ops.publication, ops.publication_event",Every pipeline run,"Power BI (trust page), auditors"

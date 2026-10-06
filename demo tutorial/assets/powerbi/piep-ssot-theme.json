@@ -1,0 +1,28 @@
+{
+  "name": "PIEP SSOT Workshop",
+  "dataColors": [
+    "#005BAA",
+    "#E31E24",
+    "#7AB800",
+    "#00A3E0",
+    "#F2A900",
+    "#5B6770",
+    "#8E44AD",
+    "#00857C"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1F2933",
+  "tableAccent": "#005BAA",
+  "good": "#2E7D32",
+  "neutral": "#F2A900",
+  "bad": "#C62828",
+  "maximum": "#005BAA",
+  "center": "#F2A900",
+  "minimum": "#E31E24",
+  "textClasses": {
+    "callout": { "fontSize": 28, "fontFace": "Segoe UI Semibold", "color": "#1F2933" },
+    "title": { "fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#1F2933" },
+    "header": { "fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#1F2933" },
+    "label": { "fontSize": 10, "fontFace": "Segoe UI", "color": "#5B6770" }
+  }
+}

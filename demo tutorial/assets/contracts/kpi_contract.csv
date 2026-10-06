@@ -1,0 +1,8 @@
+kpi_id,kpi_name,definition,unit,grain,data_owner,source_column,contract_version
+KPI-01,Gross production (BOE),Oil bbl + Gas Mscf / 6 for the selected authoritative value of each stream-day,BOE,Reporting stream x day,Production Reporting,fact_production_daily.GrossBoe,KPI-1.0
+KPI-02,Net WI production (BOE),Gross BOE x working interest effective on the business date,BOE,Reporting stream x day,Production Reporting,fact_production_daily.NetWiBoe,KPI-1.0
+KPI-03,Target achievement (%),Gross BOE / Target BOE for the same asset and dates,%,Asset x day,Planning (RKAP),fact_target_daily.TargetBoe,KPI-1.0
+KPI-04,Data completeness (%),"Stream-days with Oil, Gas and Water / all stream-days in period",%,Reporting stream x day,Data Management,fact_production_daily.IsComplete,KPI-1.0
+KPI-05,Production loss (BOE),"Approved loss allocation, gross and net WI",BOE,Well x day x event,Operations,fact_loss_allocation.LostBoeGross,KPI-1.0
+KPI-06,Opex (USD),Closing operating cost converted with the approved monthly FX rate,USD,Asset x month x category,Finance,fact_operating_cost_monthly.AmountUsd,KPI-1.0
+KPI-07,Equipment downtime (hours),Sum of downtime event duration,hours,Event,Operations,fact_downtime_event.DurationHours,KPI-1.0

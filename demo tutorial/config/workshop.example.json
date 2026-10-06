@@ -1,0 +1,26 @@
+{
+  "dataset_version": "piep-ssot-1.0",
+  "profile": "standard",
+  "azure_sql": {
+    "server": "REPLACE.database.windows.net",
+    "database": "sqldb_piep_source_demo",
+    "username": "REPLACE@yourtenant.example",
+    "driver": "ODBC Driver 18 for SQL Server",
+    "authentication": "ActiveDirectoryInteractive",
+    "authentication_options": "ActiveDirectoryInteractive (popup login) atau AzureCli (memakai token az login, username tidak dipakai)"
+  },
+  "fabric": {
+    "core_workspace_name": "ws-piep-ppdm-demo",
+    "lakehouse_name": "lh_piep_core",
+    "warehouse_name": "wh_piep_gold",
+    "semantic_model_name": "sm_piep_performance",
+    "sql_connection_name": "conn_sql_piep_source",
+    "semantic_model_connection_name": "",
+    "ai_workspace_name": "ws-piep-ppdm-ai-demo",
+    "ai_lakehouse_name": "lh_piep_ai"
+  },
+  "safety": {
+    "expected_database": "sqldb_piep_source_demo",
+    "model_mode": "PPDM_ALIGNED"
+  }
+}

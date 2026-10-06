@@ -1,0 +1,231 @@
+{
+ "properties": {
+  "activities": [
+   {
+    "name": "sp_publish_publication",
+    "type": "SqlServerStoredProcedure",
+    "dependsOn": [],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "linkedService": {
+     "name": "wh_piep_gold",
+     "properties": {
+      "annotations": [],
+      "type": "DataWarehouse",
+      "typeProperties": {
+       "endpoint": "<warehouse_endpoint>",
+       "artifactId": "<warehouse>",
+       "workspaceId": "<core_workspace>"
+      }
+     }
+    },
+    "typeProperties": {
+     "storedProcedureName": "[ops].[usp_publish_publication]",
+     "storedProcedureParameters": {
+      "PublicationId": {
+       "value": {
+        "value": "@pipeline().parameters.p_publication_id",
+        "type": "Expression"
+       },
+       "type": "String"
+      },
+      "RunId": {
+       "value": {
+        "value": "@pipeline().RunId",
+        "type": "Expression"
+       },
+       "type": "String"
+      }
+     }
+    }
+   },
+   {
+    "name": "sm_refresh_piep_performance",
+    "type": "PBISemanticModelRefresh",
+    "dependsOn": [
+     {
+      "activity": "sp_publish_publication",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "method": "post",
+     "groupId": "<core_workspace>",
+     "datasetId": "<semantic_model>",
+     "commitMode": "Transactional",
+     "waitOnCompletion": true,
+     "operationType": "SemanticModelRefresh"
+    },
+    "externalReferences": {
+     "connection": "<semantic_model_connection>"
+    }
+   },
+   {
+    "name": "sp_consumer_semantic_model",
+    "type": "SqlServerStoredProcedure",
+    "dependsOn": [
+     {
+      "activity": "sm_refresh_piep_performance",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "linkedService": {
+     "name": "wh_piep_gold",
+     "properties": {
+      "annotations": [],
+      "type": "DataWarehouse",
+      "typeProperties": {
+       "endpoint": "<warehouse_endpoint>",
+       "artifactId": "<warehouse>",
+       "workspaceId": "<core_workspace>"
+      }
+     }
+    },
+    "typeProperties": {
+     "storedProcedureName": "[ops].[usp_record_consumer_status]",
+     "storedProcedureParameters": {
+      "PublicationId": {
+       "value": {
+        "value": "@pipeline().parameters.p_publication_id",
+        "type": "Expression"
+       },
+       "type": "String"
+      },
+      "Consumer": {
+       "value": "SEMANTIC_MODEL",
+       "type": "String"
+      },
+      "Status": {
+       "value": "REFRESHED",
+       "type": "String"
+      }
+     }
+    }
+   },
+   {
+    "name": "nb_06_prepare_ai_serving",
+    "type": "TridentNotebook",
+    "dependsOn": [
+     {
+      "activity": "sp_publish_publication",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "notebookId": "<notebook:nb_06_prepare_ai_serving>",
+     "workspaceId": "<ai_workspace>",
+     "parameters": {
+      "p_publication_id": {
+       "value": {
+        "value": "@pipeline().parameters.p_publication_id",
+        "type": "Expression"
+       },
+       "type": "string"
+      },
+      "p_run_id": {
+       "value": {
+        "value": "@pipeline().RunId",
+        "type": "Expression"
+       },
+       "type": "string"
+      },
+      "p_source_prefix": {
+       "value": "`ws-piep-ppdm-demo`.`lh_piep_core`.`serve`",
+       "type": "string"
+      }
+     }
+    }
+   },
+   {
+    "name": "sp_consumer_ai_serving",
+    "type": "SqlServerStoredProcedure",
+    "dependsOn": [
+     {
+      "activity": "nb_06_prepare_ai_serving",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "linkedService": {
+     "name": "wh_piep_gold",
+     "properties": {
+      "annotations": [],
+      "type": "DataWarehouse",
+      "typeProperties": {
+       "endpoint": "<warehouse_endpoint>",
+       "artifactId": "<warehouse>",
+       "workspaceId": "<core_workspace>"
+      }
+     }
+    },
+    "typeProperties": {
+     "storedProcedureName": "[ops].[usp_record_consumer_status]",
+     "storedProcedureParameters": {
+      "PublicationId": {
+       "value": {
+        "value": "@pipeline().parameters.p_publication_id",
+        "type": "Expression"
+       },
+       "type": "String"
+      },
+      "Consumer": {
+       "value": "AI_SERVING",
+       "type": "String"
+      },
+      "Status": {
+       "value": "READY",
+       "type": "String"
+      }
+     }
+    }
+   }
+  ],
+  "parameters": {
+   "p_publication_id": {
+    "type": "string",
+    "defaultValue": "PUB-B0"
+   }
+  },
+  "variables": {}
+ }
+}

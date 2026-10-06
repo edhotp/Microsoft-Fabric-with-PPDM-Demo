@@ -1,0 +1,319 @@
+{
+ "properties": {
+  "activities": [
+   {
+    "name": "sql_prepare_batch",
+    "type": "Script",
+    "dependsOn": [],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "externalReferences": {
+     "connection": "<sql_connection>"
+    },
+    "typeProperties": {
+     "database": "sqldb_piep_source_demo",
+     "scripts": [
+      {
+       "type": "NonQuery",
+       "text": {
+        "value": "@replace('DECLARE @b varchar(10) = ''{batch}'';\nDECLARE @parent varchar(10) = (SELECT parent_batch_id FROM (VALUES (''B0'', NULL), (''B1'', ''B0''), (''C1'', ''B1''), (''D1'', ''C1''), (''H1'', ''D1''), (''X1'', ''H1''), (''Q1'', ''X1''), (''Q2'', ''Q1''), (''S1'', ''Q2''), (''S2'', ''S1'')) AS v(batch_id, parent_batch_id) WHERE batch_id = @b);\nIF @parent IS NOT NULL AND NOT EXISTS (SELECT 1 FROM ctl.source_batch WHERE batch_id = @parent AND state = ''SEALED'')\n    THROW 50001, ''Parent batch is not SEALED. Load batches in order.'', 1;\nDECLARE @sql nvarchar(max) = N'''';\nSELECT @sql = @sql + N''DELETE FROM '' + QUOTENAME(source_schema) + N''.'' + QUOTENAME(source_table) + N'' WHERE batch_id = @b;''\nFROM ctl.entity_config;\nEXEC sys.sp_executesql @sql, N''@b varchar(10)'', @b = @b;', '{batch}', pipeline().parameters.p_batch_id)",
+        "type": "Expression"
+       }
+      }
+     ],
+     "scriptBlockExecutionTimeout": "02:00:00"
+    }
+   },
+   {
+    "name": "lkp_entities",
+    "type": "Lookup",
+    "dependsOn": [
+     {
+      "activity": "sql_prepare_batch",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "source": {
+      "type": "AzureSqlSource",
+      "sqlReaderQuery": "SELECT entity_name, source_schema, source_table FROM ctl.entity_config WHERE enabled = 1 AND entity_name <> 'ctl__source_batch' ORDER BY ordinal",
+      "queryTimeout": "02:00:00",
+      "partitionOption": "None"
+     },
+     "firstRowOnly": false,
+     "datasetSettings": {
+      "annotations": [],
+      "type": "AzureSqlTable",
+      "schema": [],
+      "typeProperties": {
+       "database": "sqldb_piep_source_demo"
+      },
+      "externalReferences": {
+       "connection": "<sql_connection>"
+      }
+     }
+    }
+   },
+   {
+    "name": "fe_load_entities",
+    "type": "ForEach",
+    "dependsOn": [
+     {
+      "activity": "lkp_entities",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "typeProperties": {
+     "items": {
+      "value": "@activity('lkp_entities').output.value",
+      "type": "Expression"
+     },
+     "isSequential": false,
+     "batchCount": 8,
+     "activities": [
+      {
+       "name": "cp_csv_to_sql",
+       "type": "Copy",
+       "dependsOn": [],
+       "policy": {
+        "timeout": "0.12:00:00",
+        "retry": 1,
+        "retryIntervalInSeconds": 30,
+        "secureOutput": false,
+        "secureInput": false
+       },
+       "typeProperties": {
+        "source": {
+         "type": "DelimitedTextSource",
+         "storeSettings": {
+          "type": "LakehouseReadSettings",
+          "recursive": false,
+          "enablePartitionDiscovery": false
+         },
+         "formatSettings": {
+          "type": "DelimitedTextReadSettings"
+         },
+         "datasetSettings": {
+          "annotations": [],
+          "linkedService": {
+           "name": "lh_piep_core",
+           "properties": {
+            "annotations": [],
+            "type": "Lakehouse",
+            "typeProperties": {
+             "workspaceId": "<core_workspace>",
+             "artifactId": "<lakehouse>",
+             "rootFolder": "Files"
+            }
+           }
+          },
+          "type": "DelimitedText",
+          "typeProperties": {
+           "location": {
+            "type": "LakehouseLocation",
+            "folderPath": {
+             "value": "@concat('source_packs/', pipeline().parameters.p_batch_id)",
+             "type": "Expression"
+            },
+            "fileName": {
+             "value": "@concat(item().source_schema, '.', item().source_table, '.csv')",
+             "type": "Expression"
+            }
+           },
+           "columnDelimiter": ",",
+           "escapeChar": "\"",
+           "firstRowAsHeader": true,
+           "quoteChar": "\""
+          },
+          "schema": []
+         }
+        },
+        "sink": {
+         "type": "AzureSqlSink",
+         "writeBehavior": "insert",
+         "sqlWriterUseTableLock": false,
+         "datasetSettings": {
+          "annotations": [],
+          "type": "AzureSqlTable",
+          "schema": [],
+          "typeProperties": {
+           "schema": {
+            "value": "@item().source_schema",
+            "type": "Expression"
+           },
+           "table": {
+            "value": "@item().source_table",
+            "type": "Expression"
+           },
+           "database": "sqldb_piep_source_demo"
+          },
+          "externalReferences": {
+           "connection": "<sql_connection>"
+          }
+         }
+        },
+        "enableStaging": false,
+        "translator": {
+         "type": "TabularTranslator",
+         "typeConversion": true,
+         "typeConversionSettings": {
+          "allowDataTruncation": false,
+          "treatBooleanAsNumber": false
+         }
+        }
+       }
+      }
+     ]
+    }
+   },
+   {
+    "name": "cp_source_batch_seal",
+    "type": "Copy",
+    "dependsOn": [
+     {
+      "activity": "fe_load_entities",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 1,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "typeProperties": {
+     "source": {
+      "type": "DelimitedTextSource",
+      "storeSettings": {
+       "type": "LakehouseReadSettings",
+       "recursive": false,
+       "enablePartitionDiscovery": false
+      },
+      "formatSettings": {
+       "type": "DelimitedTextReadSettings"
+      },
+      "datasetSettings": {
+       "annotations": [],
+       "linkedService": {
+        "name": "lh_piep_core",
+        "properties": {
+         "annotations": [],
+         "type": "Lakehouse",
+         "typeProperties": {
+          "workspaceId": "<core_workspace>",
+          "artifactId": "<lakehouse>",
+          "rootFolder": "Files"
+         }
+        }
+       },
+       "type": "DelimitedText",
+       "typeProperties": {
+        "location": {
+         "type": "LakehouseLocation",
+         "folderPath": {
+          "value": "@concat('source_packs/', pipeline().parameters.p_batch_id)",
+          "type": "Expression"
+         },
+         "fileName": "ctl.source_batch.csv"
+        },
+        "columnDelimiter": ",",
+        "escapeChar": "\"",
+        "firstRowAsHeader": true,
+        "quoteChar": "\""
+       },
+       "schema": []
+      }
+     },
+     "sink": {
+      "type": "AzureSqlSink",
+      "writeBehavior": "insert",
+      "sqlWriterUseTableLock": false,
+      "datasetSettings": {
+       "annotations": [],
+       "type": "AzureSqlTable",
+       "schema": [],
+       "typeProperties": {
+        "schema": "ctl",
+        "table": "source_batch",
+        "database": "sqldb_piep_source_demo"
+       },
+       "externalReferences": {
+        "connection": "<sql_connection>"
+       }
+      }
+     },
+     "enableStaging": false,
+     "translator": {
+      "type": "TabularTranslator",
+      "typeConversion": true,
+      "typeConversionSettings": {
+       "allowDataTruncation": false,
+       "treatBooleanAsNumber": false
+      }
+     }
+    }
+   },
+   {
+    "name": "sql_seal_and_report",
+    "type": "Script",
+    "dependsOn": [
+     {
+      "activity": "cp_source_batch_seal",
+      "dependencyConditions": [
+       "Succeeded"
+      ]
+     }
+    ],
+    "policy": {
+     "timeout": "0.12:00:00",
+     "retry": 0,
+     "retryIntervalInSeconds": 30,
+     "secureOutput": false,
+     "secureInput": false
+    },
+    "externalReferences": {
+     "connection": "<sql_connection>"
+    },
+    "typeProperties": {
+     "database": "sqldb_piep_source_demo",
+     "scripts": [
+      {
+       "type": "Query",
+       "text": {
+        "value": "@replace('UPDATE ctl.source_batch SET sealed_at_utc = SYSUTCDATETIME() WHERE batch_id = ''{batch}'';\nSELECT entity_name, row_count FROM ctl.batch_entity WHERE batch_id = ''{batch}'' ORDER BY entity_name;', '{batch}', pipeline().parameters.p_batch_id)",
+        "type": "Expression"
+       }
+      }
+     ],
+     "scriptBlockExecutionTimeout": "02:00:00"
+    }
+   }
+  ],
+  "parameters": {
+   "p_batch_id": {
+    "type": "string",
+    "defaultValue": "B0"
+   }
+  },
+  "variables": {}
+ }
+}
